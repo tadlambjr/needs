@@ -1,14 +1,6 @@
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow p-6">
   <div class="flex items-start justify-between mb-3">
     <div class="flex-1">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="px-3 py-1 text-xs font-medium rounded-full" style="background-color: <%= need.category.color %>20; color: <%= need.category.color %>">
-          <%= need.category.name %>
-        </span>
-        <span class="px-2 py-1 text-xs rounded <%= status_badge_class(need.status) %>">
-          <%= need.status.titleize %>
-        </span>
-      </div>
       <h3 class="text-xl font-semibold mb-2">
         <%= link_to need.title, need_path(need), class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
       </h3>

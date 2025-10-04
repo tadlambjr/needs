@@ -20,7 +20,7 @@ class HomeController < ApplicationController
       @unread_notifications_count = Current.user.notifications.unread.count
       
       # Calendar data - 6 weeks starting from today
-      @calendar_start = Date.today.beginning_of_week
+      @calendar_start = Date.today.beginning_of_week(:sunday)
       @calendar_end = @calendar_start + 6.weeks
       @calendar_needs = Need.member_visible
                            .where('start_date <= ? AND end_date >= ?', @calendar_end, @calendar_start)

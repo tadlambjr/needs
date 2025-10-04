@@ -53,4 +53,9 @@ module ApplicationHelper
       'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
     end
   end
+  
+  def pending_approvals_count
+    return 0 unless Current.user&.admin?
+    @pending_approvals_count ||= Current.user.church.needs.pending_approval.count
+  end
 end

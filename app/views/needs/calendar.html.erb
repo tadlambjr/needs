@@ -40,38 +40,44 @@
       <% end %>
     </div>
 
-    <!-- Calendar Days -->
-    <div class="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700" style="grid-auto-rows: minmax(120px, auto);">
-      <% current_date = @calendar_start %>
-      <% while current_date <= @calendar_end %>
-        <% day_needs = @calendar_needs.select { |need| need.start_date <= current_date && need.end_date >= current_date } %>
-        <% is_today = current_date == Date.today %>
-        <% is_current_month = current_date.month == @current_month.month %>
+    <!-- Calendar Days Container -->
+    <div class="relative bg-gray-200 dark:bg-gray-700">
+      <% 
+        # Organize dates into weeks for better processing
+        weeks = []
+        current_date = @calendar_start
+        while current_date <= @calendar_end
+          week = []
+          7.times do
+            week << current_date if current_date <= @calendar_end
+            current_date += 1.day
+          end
+          weeks << week
+        end
         
-        <div class="bg-white dark:bg-gray-800 p-1.5 sm:p-2 overflow-hidden flex flex-col <%= 'bg-blue-50 dark:bg-blue-900/20' if is_today %> <%= 'opacity-40' unless is_current_month %>">
-          <div class="text-xs sm:text-sm font-semibold mb-1 <%= 'text-blue-600 dark:text-blue-400' if is_today %> <%= 'text-center sm:text-left' %>">
-            <%= current_date.day %>
-          </div>
-          
-          <div class="flex-1 overflow-y-auto space-y-1">
-            <% day_needs.first(3).each do |need| %>
-              <% user_signed_up = need.need_signups.any? { |signup| signup.user_id == Current.user.id && signup.status.in?(['signed_up', 'waitlist']) } %>
-              <%= link_to need_path(need), class: "block text-xs p-1 rounded truncate #{user_signed_up ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'}", title: need.title do %>
-                <span class="hidden sm:inline"><%= need.title %></span>
-                <span class="sm:hidden">•</span>
-              <% end %>
-            <% end %>
-            
-            <% if day_needs.count > 3 %>
-              <div class="text-xs text-gray-500 dark:text-gray-400">
-                +<%= day_needs.count - 3 %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-        
-        <% current_date += 1.day %>
-      <% end %>
+        # Create a hash of needs by date for quick lookup
+        needs_by_date = Hash.new { |h, k| h[k] = [] }
+        @calendar_needs.each do |need|
+          date_range = (need.start_date..need.end_date).to_a
+          date_range.each do |date|
+            if date >= @calendar_start && date <= @calendar_end
+              needs_by_date[date] << need
+            end
+          end
+        end
+      %>
+      
+      <%= render "shared/calendar_grid", 
+          weeks: weeks, 
+          needs_by_date: needs_by_date,
+          calendar_start: @calendar_start,
+          calendar_end: @calendar_end,
+          current_month: @current_month,
+          upcoming_signups: @upcoming_signups,
+          show_past_opacity: false,
+          min_height: 120,
+          max_events_shown: 3,
+          has_gaps: true %>
     </div>
   </div>
 

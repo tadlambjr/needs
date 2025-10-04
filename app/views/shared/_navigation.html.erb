@@ -1,4 +1,4 @@
-<nav class="bg-white dark:bg-gray-800 shadow-sm fixed top-0 left-0 right-0 z-50" data-controller="mobile-menu">
+<nav class="bg-white dark:bg-gray-800 shadow-sm fixed top-0 left-0 right-0 z-[100]" data-controller="mobile-menu">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between h-16">
       <!-- Logo/Brand -->
@@ -16,7 +16,12 @@
         <%= link_to "My Signups", my_needs_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         
         <% if Current.user.admin? %>
-          <%= link_to "Pending Approval", pending_approval_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to pending_approval_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 relative" do %>
+            Approvals
+            <% if pending_approvals_count > 0 %>
+              <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"><%= pending_approvals_count %></span>
+            <% end %>
+          <% end %>
           <%= link_to "Admin", admin_root_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         <% end %>
         
@@ -72,7 +77,14 @@
         <%= link_to "My Signups", my_needs_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         
         <% if Current.user.admin? %>
-          <%= link_to "Pending Approval", pending_approval_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to pending_approval_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 relative" do %>
+            <span class="inline-flex items-center gap-2">
+              Approvals
+              <% if pending_approvals_count > 0 %>
+                <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full"><%= pending_approvals_count %></span>
+              <% end %>
+            </span>
+          <% end %>
           <%= link_to "Admin", admin_root_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         <% end %>
         
