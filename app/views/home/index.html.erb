@@ -10,20 +10,35 @@
       <h2 class="text-2xl font-semibold mb-4">My Upcoming Commitments</h2>
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <% @upcoming_signups.each do |signup| %>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-indigo-500">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 <%= signup.completed? ? 'border-blue-500' : 'border-indigo-500' %>">
             <div class="flex items-start justify-between mb-2">
               <h3 class="font-semibold text-lg"><%= signup.need.title %></h3>
-              <span class="px-2 py-1 text-xs rounded <%= status_badge_class(signup.status) %>">
-                <%= signup.status.titleize %>
-              </span>
+              <% if signup.completed? %>
+                <span class="flex items-center gap-1 px-2 py-1 text-xs rounded bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                  <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                  </svg>
+                  Completed
+                </span>
+              <% else %>
+                <span class="px-2 py-1 text-xs rounded <%= status_badge_class(signup.status) %>">
+                  <%= signup.status.titleize %>
+                </span>
+              <% end %>
             </div>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
               <strong>Date:</strong> <%= format_date(signup.specific_date || signup.need.start_date) %>
             </p>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-              <strong>Time:</strong> <%= time_slot_label(signup.need.time_slot) %>
+              <strong>Time:</strong> <%= time_slot_label(signup.need.time_slot, signup.need.specific_time) %>
             </p>
-            <%= link_to "View Details", need_path(signup.need), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+            <div class="flex gap-2">
+              <%= link_to "View Details", need_path(signup.need), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+              <% if signup.need.checklist && !signup.completed? %>
+                <span class="text-gray-400">•</span>
+                <%= link_to "Checklist", checklist_need_signup_path(signup), class: "text-green-600 hover:text-green-800 text-sm font-medium" %>
+              <% end %>
+            </div>
           </div>
         <% end %>
       </div>

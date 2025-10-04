@@ -4,6 +4,9 @@
 
 import { application } from "controllers/application"
 
+import ChecklistController from "controllers/checklist_controller"
+application.register("checklist", ChecklistController)
+
 import DropdownController from "controllers/dropdown_controller"
 application.register("dropdown", DropdownController)
 
@@ -12,3 +15,6 @@ application.register("mobile-menu", MobileMenuController)
 
 import ThemeController from "controllers/theme_controller"
 application.register("theme", ThemeController)
+
+import TimeSlotController from "controllers/time_slot_controller"
+application.register("time-slot", TimeSlotController)

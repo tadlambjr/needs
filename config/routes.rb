@@ -39,7 +39,8 @@ Rails.application.routes.draw do
   
   resources :need_signups, only: [:create, :destroy] do
     member do
-      patch :complete_checklist_item
+      get :checklist
+      patch :mark_complete
     end
   end
   

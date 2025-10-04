@@ -110,13 +110,22 @@ class NeedsController < ApplicationController
     
     @calendar_needs = current_church.needs.member_visible
                           .where('start_date <= ? AND end_date >= ?', @calendar_end, @calendar_start)
-                          .includes(:category, :need_signups)
+                          .includes(:category, need_signups: :user)
     
     # Get user's signups for the calendar period
     @upcoming_signups = Current.user.need_signups.joins(:need)
                                    .where(status: [:signed_up, :waitlist])
                                    .where('needs.start_date <= ? AND needs.end_date >= ?', @calendar_end, @calendar_start)
                                    .includes(:need)
+    
+    # Get individual day signups for meal trains
+    @day_signups = current_church.needs.joins(:need_signups)
+                                  .where('need_signups.specific_date >= ? AND need_signups.specific_date <= ?', @calendar_start, @calendar_end)
+                                  .where('need_signups.status' => [:signed_up, :waitlist, :completed])
+                                  .where(allow_individual_day_signup: true)
+                                  .includes(need_signups: [:user])
+                                  .flat_map(&:need_signups)
+                                  .select { |s| s.specific_date && s.specific_date >= @calendar_start && s.specific_date <= @calendar_end }
   end
 
   def my_needs

@@ -1,5 +1,5 @@
 class NeedSignupsController < ApplicationController
-  before_action :set_need_signup, only: [:destroy, :complete_checklist_item]
+  before_action :set_need_signup, only: [:destroy, :checklist, :mark_complete]
 
   def create
     @need = Need.find(params[:need_signup][:need_id])
@@ -22,10 +22,24 @@ class NeedSignupsController < ApplicationController
     end
   end
 
-  def complete_checklist_item
-    # This would be used to mark checklist items as complete
-    # Implementation depends on how you want to track checklist completion
-    redirect_to @need_signup.need, notice: "Checklist item marked as complete."
+  def checklist
+    @need = @need_signup.need
+    @checklist = @need.checklist
+    
+    if @checklist.nil?
+      redirect_to @need, alert: "This need does not have a checklist."
+      return
+    end
+    
+    @checklist_items = @checklist.checklist_items.ordered
+  end
+
+  def mark_complete
+    if @need_signup.update(status: :completed, completed_at: Time.current)
+      redirect_to @need_signup.need, notice: "Great job! You've completed this need."
+    else
+      redirect_to @need_signup.need, alert: "Unable to mark as complete."
+    end
   end
 
   private

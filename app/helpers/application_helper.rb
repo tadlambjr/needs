@@ -14,7 +14,7 @@ module ApplicationHelper
     datetime.strftime('%B %d, %Y at %I:%M %p')
   end
   
-  def time_slot_label(time_slot)
+  def time_slot_label(time_slot, specific_time = nil)
     return '' if time_slot.blank?
     
     case time_slot.to_s
@@ -27,7 +27,11 @@ module ApplicationHelper
     when 'all_day'
       'All Day'
     when 'specific_time'
-      'Specific Time'
+      if specific_time.present?
+        specific_time.strftime('%I:%M %p')
+      else
+        'Specific Time'
+      end
     else
       time_slot.to_s.titleize
     end

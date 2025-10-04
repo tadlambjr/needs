@@ -9,6 +9,7 @@
   # - show_past_opacity: Boolean to show past dates with opacity (default: false)
   # - min_height: Minimum height of each cell (default: 120)
   # - max_events_shown: Maximum number of events to show per day (default: 3)
+  # - day_signups_by_date: Hash of dates to individual day signups (optional)
   
   current_month ||= Date.today
   upcoming_signups ||= []
@@ -16,6 +17,7 @@
   min_height ||= 120
   max_events_shown ||= 3
   has_gaps = local_assigns[:has_gaps] || false
+  day_signups_by_date ||= {}
 %>
 
 <!-- Day cells and events grid -->
@@ -29,7 +31,10 @@
         is_multi_day = need.start_date != need.end_date
         [is_multi_day ? 0 : 1, need.start_date]
       end
-      events_count = [sorted_needs.count, max_events_shown].min
+      # Include individual day signups in the count
+      day_signups = day_signups_by_date[date] || []
+      total_events = sorted_needs.count + day_signups.count
+      events_count = [total_events, max_events_shown].min
       max_events_in_week = [max_events_in_week, events_count].max
     end
     max_events_in_week
@@ -62,12 +67,13 @@
       %>
       
       <div class="relative p-1.5 sm:p-2 flex flex-col
-                  <%= has_gaps ? 'bg-white dark:bg-gray-800' : 'border-r border-b border-gray-200 dark:border-gray-700' %>
+                  <%= !has_gaps ? 'border-r border-b border-gray-200 dark:border-gray-700' : '' %>
+                  <%= has_gaps && !is_today && is_current_month ? 'bg-white dark:bg-gray-800' : '' %>
                   <%= 'bg-indigo-50 dark:bg-indigo-900/20' if is_today && !has_gaps %>
                   <%= 'bg-blue-50 dark:bg-blue-900/20' if is_today && has_gaps %>
                   <%= show_past_opacity && is_past ? 'opacity-50' : '' %>
                   <%= !is_current_month && !has_gaps ? 'bg-gray-50 dark:bg-gray-900' : '' %>
-                  <%= !is_current_month && has_gaps ? 'opacity-40' : '' %>
+                  <%= !is_current_month && has_gaps && !is_today ? 'bg-white dark:bg-gray-800 opacity-40' : '' %>
                   <%= !has_gaps ? 'transition-all hover:bg-gray-50 dark:hover:bg-gray-700/50' : '' %>">
         
         <!-- Date number -->
@@ -128,18 +134,59 @@
             # Check if user is signed up
             user_signed_up = need.need_signups.any? { |signup| signup.user_id == Current.user.id && signup.status.in?(['signed_up', 'waitlist']) }
             
+            # Get active volunteers for this need
+            active_signups = need.need_signups.select { |s| s.status.in?(['signed_up', 'waitlist', 'completed']) }
+            volunteer_names = active_signups.map { |s| s.user.name }.join(', ')
+            
             # Calculate gap adjustment if calendar has gaps
             gap_adjustment = has_gaps ? day_index : 0
           %>
           
           <%= link_to need_path(need), class: "pointer-events-auto absolute", 
               style: "top: #{top_px}px; left: calc(#{left_percent}% + #{gap_adjustment}px + 0.375rem); width: calc(#{width_percent}% - 0.75rem - #{gap_adjustment > 0 ? 1 : 0}px); z-index: #{z_index};" do %>
-            <div class="text-xs p-1 rounded overflow-hidden transition-colors
+            <div class="text-xs p-1 rounded transition-colors overflow-hidden
                         <%= user_signed_up ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : need.full? ? 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400' : 'bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800' %>"
                  style="border-left: 2px solid <%= need.category.color %>;"
-                 title="<%= need.title %>">
-              <span class="hidden sm:inline whitespace-nowrap overflow-hidden text-ellipsis"><%= need.title %></span>
-              <span class="sm:hidden whitespace-nowrap overflow-hidden text-ellipsis"><%= need.title.truncate([span_days * 8, 20].min) %></span>
+                 title="<%= need.title %><%= volunteer_names.present? ? " (#{volunteer_names})" : '' %>">
+              <div class="whitespace-nowrap overflow-hidden text-ellipsis">
+                <%= need.title %><%= volunteer_names.present? ? " (#{volunteer_names})" : '' %>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+        
+        <!-- Individual day signups for meal trains -->
+        <% day_signups = day_signups_by_date[date] || [] %>
+        <% day_signups.each_with_index do |signup, signup_index| %>
+          <% 
+            # Calculate event index accounting for needs already rendered
+            event_index = events_to_show.count + signup_index
+            next if event_index >= max_events_shown
+            
+            # Position from top of week row
+            top_px = 32 + (event_index * 26)
+            
+            # Single day event positioning
+            cell_width_percent = 100.0 / 7
+            left_percent = day_index * cell_width_percent
+            width_percent = cell_width_percent
+            
+            z_index = 50 - event_index
+            gap_adjustment = has_gaps ? day_index : 0
+            
+            # Check if this is current user's signup
+            is_user_signup = signup.user_id == Current.user.id
+          %>
+          
+          <%= link_to need_path(signup.need), class: "pointer-events-auto absolute", 
+              style: "top: #{top_px}px; left: calc(#{left_percent}% + #{gap_adjustment}px + 0.375rem); width: calc(#{width_percent}% - 0.75rem - #{gap_adjustment > 0 ? 1 : 0}px); z-index: #{z_index};" do %>
+            <div class="text-xs p-1 rounded transition-colors overflow-hidden
+                        <%= is_user_signup ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200' : 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-800' %>"
+                 style="border-left: 2px solid <%= signup.need.category.color %>;"
+                 title="<%= signup.user.name %> - <%= signup.need.title %>">
+              <div class="whitespace-nowrap overflow-hidden text-ellipsis">
+                <%= signup.user.name %> - <%= signup.need.title %>
+              </div>
             </div>
           <% end %>
         <% end %>

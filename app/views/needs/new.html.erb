@@ -11,7 +11,7 @@
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
     <h1 class="text-3xl font-bold mb-6">Create New Need</h1>
 
-    <%= form_with model: @need, class: "space-y-6" do |f| %>
+    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot" } do |f| %>
       <%= render "shared/form_errors", object: @need %>
 
       <!-- Title -->
@@ -56,7 +56,17 @@
               ['Specific Time', 'specific_time']
             ]), 
             { include_blank: "Select time slot" }, 
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            data: { action: "change->time-slot#toggle" } %>
+      </div>
+
+      <!-- Specific Time (shown when time_slot is specific_time) -->
+      <div data-time-slot-target="specificTime" class="hidden">
+        <%= f.label :specific_time, class: "block text-sm font-medium mb-2" %>
+        <%= f.time_field :specific_time, 
+            data: { time_slot_target: "timeInput" },
             class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        <p class="text-sm text-gray-500 mt-1">Enter the specific time for this need</p>
       </div>
 
       <!-- Location -->

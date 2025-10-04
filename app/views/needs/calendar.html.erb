@@ -65,11 +65,20 @@
             end
           end
         end
+        
+        # Create a hash of individual day signups by date
+        day_signups_by_date = Hash.new { |h, k| h[k] = [] }
+        @day_signups.each do |signup|
+          if signup.specific_date
+            day_signups_by_date[signup.specific_date] << signup
+          end
+        end
       %>
       
       <%= render "shared/calendar_grid", 
           weeks: weeks, 
           needs_by_date: needs_by_date,
+          day_signups_by_date: day_signups_by_date,
           calendar_start: @calendar_start,
           calendar_end: @calendar_end,
           current_month: @current_month,
