@@ -1,14 +1,69 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get "needs/index"
+  get "needs/show"
+  get "needs/new"
+  get "needs/edit"
+  get "needs/calendar"
+  get "needs/my_needs"
+  get "needs/pending_approval"
+  get "home/index"
+  resource :session
+  resources :passwords, param: :token
+  resources :registrations, only: [:new, :create]
+  
+  # Root route
+  root "home#index"
+  
+  # Main application routes
+  resources :needs do
+    member do
+      post :signup
+      delete :cancel_signup
+      patch :approve
+      patch :reject
+      patch :complete
+    end
+    
+    collection do
+      get :calendar
+      get :my_needs
+      get :pending_approval
+    end
+  end
+  
+  resources :categories, except: [:show]
+  
+  resources :checklists do
+    resources :checklist_items, only: [:create, :update, :destroy]
+  end
+  
+  resources :need_signups, only: [:create, :destroy] do
+    member do
+      patch :complete_checklist_item
+    end
+  end
+  
+  resources :notifications, only: [:index] do
+    member do
+      patch :mark_as_read
+    end
+    
+    collection do
+      patch :mark_all_as_read
+    end
+  end
+  
+  # User profile and settings
+  resource :profile, only: [:show, :edit, :update]
+  resource :settings, only: [:show, :update]
+  
+  # Admin routes
+  namespace :admin do
+    root "dashboard#index"
+    resources :users, only: [:index, :edit, :update]
+    resources :reports, only: [:index]
+  end
+  
+  # Health check
   get "up" => "rails/health#show", as: :rails_health_check
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end

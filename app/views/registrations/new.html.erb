@@ -1,0 +1,257 @@
+<% content_for :hide_footer, true %>
+<% content_for :container_class, '' %>
+
+<div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-2xl w-full">
+    <!-- Logo/Brand -->
+    <div class="text-center mb-8 animate-fade-in">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-white dark:bg-gray-800 rounded-full shadow-lg mb-4">
+        <svg class="w-10 h-10 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold text-white mb-2">Church Needs</h2>
+      <p class="text-indigo-100">Create your account</p>
+    </div>
+
+    <!-- Sign Up Card -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 animate-fade-in">
+      <% if @user&.errors&.any? || @church&.errors&.any? %>
+        <div class="mb-6 bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 p-4 rounded-r-lg">
+          <div class="flex items-start">
+            <svg class="w-5 h-5 text-red-400 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+            <div>
+              <p class="text-sm font-medium text-red-800 dark:text-red-200 mb-1">Please fix the following errors:</p>
+              <ul class="text-sm text-red-700 dark:text-red-300 list-disc list-inside">
+                <% @user&.errors&.full_messages&.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+                <% @church&.errors&.full_messages&.each do |message| %>
+                  <li>Church <%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <%= form_with model: @user, url: registrations_path, class: "space-y-6" do |form| %>
+        <!-- Personal Information -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700 pb-2">Your Information</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Name -->
+            <div>
+              <%= form.label :name, "Full Name", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.text_field :name,
+                  required: true,
+                  autofocus: true,
+                  placeholder: "John Smith",
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <%= form.label :phone, "Phone Number (optional)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.telephone_field :phone,
+                  placeholder: "(555) 123-4567",
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div>
+            <%= form.label :email_address, "Email Address", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+            <%= form.email_field :email_address,
+                required: true,
+                autocomplete: "username",
+                placeholder: "you@example.com",
+                class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Password -->
+            <div>
+              <%= form.label :password, "Password", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.password_field :password,
+                  required: true,
+                  autocomplete: "new-password",
+                  placeholder: "••••••••",
+                  minlength: 8,
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Minimum 8 characters</p>
+            </div>
+
+            <!-- Password Confirmation -->
+            <div>
+              <%= form.label :password_confirmation, "Confirm Password", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.password_field :password_confirmation,
+                  required: true,
+                  autocomplete: "new-password",
+                  placeholder: "••••••••",
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Church Selection -->
+        <div class="space-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Church</h3>
+
+          <div class="space-y-3">
+            <!-- Join Existing Church -->
+            <div class="flex items-start">
+              <%= form.radio_button :church_option, "existing",
+                  id: "church_option_existing",
+                  checked: true,
+                  class: "mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600" %>
+              <label for="church_option_existing" class="ml-3 flex-1">
+                <span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Join existing church</span>
+                <div class="mt-2" id="existing_church_select">
+                  <%= form.select :church_id,
+                      options_from_collection_for_select(@churches, :id, :name),
+                      { prompt: "Select your church..." },
+                      class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+                </div>
+              </label>
+            </div>
+
+            <!-- Create New Church -->
+            <div class="flex items-start">
+              <%= form.radio_button :church_option, "new",
+                  id: "church_option_new",
+                  class: "mt-1 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600" %>
+              <label for="church_option_new" class="ml-3 flex-1">
+                <span class="block text-sm font-medium text-gray-700 dark:text-gray-300">Create new church</span>
+                <span class="block text-xs text-gray-500 dark:text-gray-400 mt-1">You will be the admin for this church</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- New Church Fields (Hidden by default) -->
+          <div id="new_church_fields" class="space-y-4 pl-7 hidden">
+            <div>
+              <%= form.label :church_name, "Church Name", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.text_field :church_name,
+                  placeholder: "First Community Church",
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+
+            <div>
+              <%= form.label :church_address, "Address (optional)", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.text_area :church_address,
+                  rows: 2,
+                  placeholder: "123 Main Street",
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div class="md:col-span-1">
+                <%= form.label :church_city, "City", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.text_field :church_city,
+                    placeholder: "Springfield",
+                    class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              </div>
+
+              <div>
+                <%= form.label :church_state, "State", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.text_field :church_state,
+                    placeholder: "IL",
+                    maxlength: 2,
+                    class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              </div>
+
+              <div>
+                <%= form.label :church_zip, "ZIP", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.text_field :church_zip,
+                    placeholder: "12345",
+                    maxlength: 10,
+                    class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <%= form.label :church_phone, "Phone", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.telephone_field :church_phone,
+                    placeholder: "(555) 123-4567",
+                    class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              </div>
+
+              <div>
+                <%= form.label :church_email, "Email", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+                <%= form.email_field :church_email,
+                    placeholder: "info@church.org",
+                    class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+              </div>
+            </div>
+
+            <div>
+              <%= form.label :church_timezone, "Timezone", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
+              <%= form.select :church_timezone,
+                  [
+                    ['Eastern Time', 'America/New_York'],
+                    ['Central Time', 'America/Chicago'],
+                    ['Mountain Time', 'America/Denver'],
+                    ['Pacific Time', 'America/Los_Angeles'],
+                    ['Alaska Time', 'America/Anchorage'],
+                    ['Hawaii Time', 'Pacific/Honolulu']
+                  ],
+                  { selected: 'America/New_York' },
+                  class: "block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition duration-150 ease-in-out" %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <%= form.submit "Create Account", class: "w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150 ease-in-out cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <!-- Sign In Link -->
+      <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <p class="text-sm text-center text-gray-600 dark:text-gray-400">
+          Already have an account?
+          <%= link_to "Sign in", new_session_path, class: "font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300" %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <p class="mt-8 text-center text-sm text-white/80">
+      © <%= Time.current.year %> Church Needs App. Built with ❤️ for our community.
+    </p>
+  </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const existingRadio = document.getElementById('church_option_existing');
+    const newRadio = document.getElementById('church_option_new');
+    const existingFields = document.getElementById('existing_church_select');
+    const newFields = document.getElementById('new_church_fields');
+
+    function toggleFields() {
+      if (newRadio && newRadio.checked) {
+        existingFields.classList.add('hidden');
+        newFields.classList.remove('hidden');
+      } else {
+        existingFields.classList.remove('hidden');
+        newFields.classList.add('hidden');
+      }
+    }
+
+    // Initialize on page load
+    toggleFields();
+
+    // Add event listeners
+    if (existingRadio) existingRadio.addEventListener('change', toggleFields);
+    if (newRadio) newRadio.addEventListener('change', toggleFields);
+  });
+</script>

@@ -1,0 +1,103 @@
+<% content_for :title, "Reports" %>
+
+<div class="max-w-7xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">Reports</h1>
+    <%= link_to "Back to Dashboard", admin_root_path, class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+  </div>
+
+  <!-- Date Range Filter -->
+  <div class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+    <%= form_with url: admin_reports_path, method: :get, local: true, class: "flex items-center space-x-4" do |f| %>
+      <%= f.label :date_range, "Date Range:", class: "text-sm font-medium" %>
+      <%= f.select :date_range, 
+          [['Last 7 Days', '7'], ['Last 30 Days', '30'], ['Last 90 Days', '90'], ['Last Year', '365']], 
+          { selected: @date_range },
+          class: "px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700" %>
+      <%= f.submit "Update", class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+    <% end %>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Needs by Status -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Needs by Status</h2>
+      <% if @needs_by_status.any? %>
+        <div class="space-y-3">
+          <% @needs_by_status.each do |status, count| %>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium"><%= status.titleize %></span>
+              <span class="text-sm text-gray-600 dark:text-gray-400"><%= count %></span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div class="bg-indigo-600 h-2 rounded-full" style="width: <%= (count.to_f / @needs_by_status.values.sum * 100).round %>%"></div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 dark:text-gray-400">No data available</p>
+      <% end %>
+    </div>
+
+    <!-- Top Volunteers -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Top Volunteers</h2>
+      <% if @top_volunteers.any? %>
+        <div class="space-y-3">
+          <% @top_volunteers.each_with_index do |(user_data, count), index| %>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <span class="text-sm font-bold text-gray-500 dark:text-gray-400 w-6"><%= index + 1 %>.</span>
+                <span class="text-sm font-medium ml-2"><%= user_data[1] %></span>
+              </div>
+              <span class="text-sm text-gray-600 dark:text-gray-400"><%= pluralize(count, 'signup') %></span>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 dark:text-gray-400">No data available</p>
+      <% end %>
+    </div>
+
+    <!-- Needs by Category -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Needs by Category</h2>
+      <% if @needs_by_category.any? %>
+        <div class="space-y-3">
+          <% @needs_by_category.each do |category_id, count| %>
+            <% category = Category.find_by(id: category_id) %>
+            <% if category %>
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium"><%= category.name %></span>
+                <span class="text-sm text-gray-600 dark:text-gray-400"><%= count %></span>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-gray-500 dark:text-gray-400">No data available</p>
+      <% end %>
+    </div>
+
+    <!-- Signups Summary -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold mb-4">Signup Activity</h2>
+      <div class="space-y-4">
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Total Signups</p>
+          <p class="text-3xl font-bold text-indigo-600"><%= @signups_by_user.values.sum %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Unique Volunteers</p>
+          <p class="text-3xl font-bold text-green-600"><%= @signups_by_user.keys.count %></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Average per Volunteer</p>
+          <p class="text-3xl font-bold text-purple-600">
+            <%= @signups_by_user.keys.count > 0 ? (@signups_by_user.values.sum.to_f / @signups_by_user.keys.count).round(1) : 0 %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

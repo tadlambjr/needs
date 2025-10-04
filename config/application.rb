@@ -38,5 +38,8 @@ module Needs
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Add app/javascript to asset load paths for Propshaft
+    config.assets.paths << Rails.root.join("app/javascript")
   end
 end

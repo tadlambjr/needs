@@ -1,0 +1,62 @@
+<% content_for :title, "Manage Checklists" %>
+
+<div class="max-w-6xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">Manage Checklists</h1>
+    <%= link_to "New Checklist", new_checklist_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+  </div>
+
+  <% if @checklists.any? %>
+    <div class="grid gap-6">
+      <% @checklists.each do |checklist| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <h2 class="text-xl font-bold"><%= checklist.name %></h2>
+              <% if checklist.description.present? %>
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400"><%= checklist.description %></p>
+              <% end %>
+              <p class="mt-2 text-xs text-gray-500 dark:text-gray-500">
+                <%= pluralize(checklist.checklist_items.count, 'item') %> • 
+                Used by <%= pluralize(checklist.needs.count, 'need') %>
+              </p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <%= link_to "Edit", edit_checklist_path(checklist), class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-900" %>
+              <%= button_to "Delete", checklist_path(checklist), method: :delete, data: { confirm: "Are you sure?" }, class: "text-red-600 dark:text-red-400 hover:text-red-900" %>
+            </div>
+          </div>
+
+          <% if checklist.checklist_items.any? %>
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h3 class="text-sm font-medium mb-2">Items:</h3>
+              <ul class="space-y-2">
+                <% checklist.checklist_items.ordered.each do |item| %>
+                  <li class="flex items-start">
+                    <svg class="h-5 w-5 text-gray-400 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <div>
+                      <p class="text-sm font-medium"><%= item.description %></p>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No checklists</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new checklist.</p>
+      <div class="mt-6">
+        <%= link_to "New Checklist", new_checklist_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+      </div>
+    </div>
+  <% end %>
+</div>

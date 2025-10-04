@@ -1,0 +1,40 @@
+<% content_for :title, "Settings" %>
+
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Settings</h1>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+    <h2 class="text-xl font-bold mb-4">Notification Preferences</h2>
+    
+    <%= form_with url: settings_path, method: :patch, local: true do |f| %>
+      <div class="space-y-4">
+        <% Notification.notification_types.keys.each do |type| %>
+          <div class="flex items-center">
+            <%= check_box_tag "notification_preferences[#{type}]", "1", @notification_preferences[type]&.enabled, class: "mr-3 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
+            <%= label_tag "notification_preferences_#{type}", type.titleize, class: "text-sm font-medium" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-6">
+        <%= f.submit "Save Preferences", class: "px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Account</h2>
+    
+    <div class="space-y-4">
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
+        <p class="mt-1"><%= @user.email_address %></p>
+      </div>
+      
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Password</p>
+        <%= link_to "Change Password", new_password_path, class: "mt-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+      </div>
+    </div>
+  </div>
+</div>

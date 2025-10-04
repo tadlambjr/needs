@@ -1,0 +1,95 @@
+<% if authenticated? %>
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold mb-2">Welcome, <%= Current.user.name %>!</h1>
+    <p class="text-gray-600 dark:text-gray-400">Here are the latest needs in our community.</p>
+  </div>
+
+  <!-- My Upcoming Signups -->
+  <% if @upcoming_signups.any? %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">My Upcoming Commitments</h2>
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <% @upcoming_signups.each do |signup| %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 border-indigo-500">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="font-semibold text-lg"><%= signup.need.title %></h3>
+              <span class="px-2 py-1 text-xs rounded <%= status_badge_class(signup.status) %>">
+                <%= signup.status.titleize %>
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              <strong>Date:</strong> <%= format_date(signup.specific_date || signup.need.start_date) %>
+            </p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              <strong>Time:</strong> <%= time_slot_label(signup.need.time_slot) %>
+            </p>
+            <%= link_to "View Details", need_path(signup.need), class: "text-indigo-600 hover:text-indigo-800 text-sm font-medium" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Quick Stats -->
+  <div class="grid gap-4 md:grid-cols-3 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h3 class="text-lg font-semibold mb-2">Available Needs</h3>
+      <p class="text-3xl font-bold text-indigo-600"><%= @upcoming_needs.count %></p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h3 class="text-lg font-semibold mb-2">My Active Signups</h3>
+      <p class="text-3xl font-bold text-green-600"><%= Current.user.need_signups.where(status: :signed_up).count %></p>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <h3 class="text-lg font-semibold mb-2">Notifications</h3>
+      <p class="text-3xl font-bold text-orange-600"><%= @unread_notifications_count %></p>
+    </div>
+  </div>
+
+  <!-- 6-Week Calendar -->
+  <%= render "calendar" %>
+
+  <!-- Filter by Category -->
+  <div class="mb-6 flex flex-wrap gap-2">
+    <%= link_to "All", needs_path, class: "px-4 py-2 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-sm font-medium hover:bg-indigo-200 dark:hover:bg-indigo-800" %>
+    <% @categories.each do |category| %>
+      <%= link_to category.name, needs_path(category_id: category.id), class: "px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600" %>
+    <% end %>
+  </div>
+
+  <!-- Upcoming Needs -->
+  <div>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-2xl font-semibold">Upcoming Needs</h2>
+      <%= link_to "View All", needs_path, class: "text-indigo-600 hover:text-indigo-800 font-medium" %>
+    </div>
+
+    <% if @upcoming_needs.any? %>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <% @upcoming_needs.each do |need| %>
+          <%= render "needs/need_card", need: need %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-8 text-center">
+        <p class="text-gray-600 dark:text-gray-400">No upcoming needs at the moment. Check back soon!</p>
+    <% end %>
+  </div>
+
+<% else %>
+  <% content_for :hide_footer, true %>
+  <% content_for :container_class, '' %>
+  
+  <!-- Unauthenticated Landing Page -->
+  <div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200">
+    <div class="min-h-screen flex items-center justify-center px-4">
+      <div class="text-center text-white">
+        <h1 class="text-5xl font-bold mb-4">Church Needs</h1>
+        <p class="text-xl mb-8">Connecting our community through service and support</p>
+        <div class="space-x-4">
+          <%= link_to "Sign In", new_session_path, class: "px-6 py-3 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-gray-100" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

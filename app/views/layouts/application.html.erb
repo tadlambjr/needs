@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-controller="theme">
   <head>
-    <title><%= content_for(:title) || "Needs" %></title>
+    <script>
+      // Set theme before page renders to prevent flash
+      const theme = localStorage.getItem('theme') || 'light';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
+    <title><%= content_for(:title) || "Church Needs" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -10,18 +17,32 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+    <% if authenticated? %>
+      <%= render "shared/navigation" %>
+    <% end %>
+
+    <main class="<%= authenticated? ? 'pt-16' : '' %>">
+      <%= render "shared/flash_messages" if notice.present? || alert.present? %>
+      
+      <% if content_for?(:container_class) && content_for(:container_class).blank? %>
+        <%= yield %>
+      <% else %>
+        <div class="<%= content_for?(:container_class) ? yield(:container_class) : 'container mx-auto px-4 py-8' %>">
+          <%= yield %>
+        </div>
+      <% end %>
+    </main>
+
+    <%= render "shared/footer" unless content_for?(:hide_footer) %>
   </body>
 </html>

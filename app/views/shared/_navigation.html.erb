@@ -1,0 +1,90 @@
+<nav class="bg-white dark:bg-gray-800 shadow-sm fixed top-0 left-0 right-0 z-50" data-controller="mobile-menu">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo/Brand -->
+      <div class="flex items-center">
+        <%= link_to root_path, class: "text-xl font-bold text-indigo-600 dark:text-indigo-400" do %>
+          Church Needs
+        <% end %>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-2 lg:space-x-4 flex-wrap gap-y-2">
+        <%= link_to "Home", root_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "All Needs", needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "Calendar", calendar_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "My Signups", my_needs_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        
+        <% if Current.user.admin? %>
+          <%= link_to "Pending Approval", pending_approval_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to "Admin", admin_root_path, class: "px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <% end %>
+        
+        <%= link_to "Create Need", new_need_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700" %>
+        
+        <!-- Theme Toggle -->
+        <button type="button" data-action="click->theme#toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" title="Toggle theme">
+          <!-- Sun icon for light mode -->
+          <svg id="theme-toggle-light-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path>
+          </svg>
+          <!-- Moon icon for dark mode -->
+          <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+          </svg>
+        </button>
+        
+        <!-- User Menu -->
+        <div class="relative" data-controller="dropdown">
+          <button type="button" data-action="click->dropdown#toggle" class="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700">
+            <span><%= Current.user.name %></span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+          
+          <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
+            <%= link_to "Profile", profile_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
+            <%= link_to "Settings", settings_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
+            <%= link_to "Notifications", notifications_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
+            <hr class="my-1 border-gray-200 dark:border-gray-700">
+            <%= button_to "Sign Out", session_path, method: :delete, class: "w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button type="button" data-action="click->mobile-menu#toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div data-mobile-menu-target="menu" class="hidden md:hidden pb-4 border-t border-gray-200 dark:border-gray-700 mt-2">
+      <div class="flex flex-col space-y-1 pt-2">
+        <%= link_to "Home", root_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "All Needs", needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "Calendar", calendar_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <%= link_to "My Signups", my_needs_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        
+        <% if Current.user.admin? %>
+          <%= link_to "Pending Approval", pending_approval_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to "Admin", admin_root_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        <% end %>
+        
+        <%= link_to "Create Need", new_need_path, class: "block px-3 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 text-center" %>
+        
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 space-y-1">
+          <%= link_to "Profile", profile_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to "Settings", settings_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= link_to "Notifications", notifications_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <%= button_to "Sign Out", session_path, method: :delete, class: "w-full text-left px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

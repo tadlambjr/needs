@@ -1,0 +1,104 @@
+<div class="max-w-3xl mx-auto">
+  <div class="mb-6">
+    <%= link_to needs_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800" do %>
+      <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      Back
+    <% end %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+    <h1 class="text-3xl font-bold mb-6">Create New Need</h1>
+
+    <%= form_with model: @need, class: "space-y-6" do |f| %>
+      <%= render "shared/form_errors", object: @need %>
+
+      <!-- Title -->
+      <div>
+        <%= f.label :title, class: "block text-sm font-medium mb-2" %>
+        <%= f.text_field :title, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700", placeholder: "e.g., Help with yard work" %>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <%= f.label :description, class: "block text-sm font-medium mb-2" %>
+        <%= f.text_area :description, rows: 4, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700", placeholder: "Describe what help is needed..." %>
+      </div>
+
+      <!-- Category -->
+      <div>
+        <%= f.label :category_id, "Category", class: "block text-sm font-medium mb-2" %>
+        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "Select a category" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+      </div>
+
+      <!-- Date Range -->
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <%= f.label :start_date, class: "block text-sm font-medium mb-2" %>
+          <%= f.date_field :start_date, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        </div>
+        <div>
+          <%= f.label :end_date, class: "block text-sm font-medium mb-2" %>
+          <%= f.date_field :end_date, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        </div>
+      </div>
+
+      <!-- Time Slot -->
+      <div>
+        <%= f.label :time_slot, class: "block text-sm font-medium mb-2" %>
+        <%= f.select :time_slot, 
+            options_for_select([
+              ['Morning (6am-12pm)', 'morning'],
+              ['Afternoon (12pm-6pm)', 'afternoon'],
+              ['Evening (6pm-10pm)', 'evening'],
+              ['All Day', 'all_day'],
+              ['Specific Time', 'specific_time']
+            ]), 
+            { include_blank: "Select time slot" }, 
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+      </div>
+
+      <!-- Location -->
+      <div>
+        <%= f.label :location, class: "block text-sm font-medium mb-2" %>
+        <%= f.text_field :location, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700", placeholder: "e.g., 123 Main St or Church Building" %>
+      </div>
+
+      <!-- Volunteer Capacity -->
+      <div>
+        <%= f.label :volunteer_capacity, "Number of Volunteers Needed", class: "block text-sm font-medium mb-2" %>
+        <%= f.number_field :volunteer_capacity, min: 1, max: 20, value: 1, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+      </div>
+
+      <!-- Multi-day signup -->
+      <div class="flex items-start">
+        <%= f.check_box :allow_individual_day_signup, class: "mt-1 mr-2" %>
+        <div>
+          <%= f.label :allow_individual_day_signup, "Allow volunteers to sign up for individual days (Meal Train)", class: "font-medium" %>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Enable this for multi-day needs where volunteers can choose specific dates</p>
+        </div>
+      </div>
+
+      <!-- Checklist (optional) -->
+      <% if @checklists.any? %>
+        <div>
+          <%= f.label :checklist_id, "Checklist (Optional)", class: "block text-sm font-medium mb-2" %>
+          <%= f.collection_select :checklist_id, @checklists, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        </div>
+      <% end %>
+
+      <!-- Submit Buttons -->
+      <div class="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <%= f.submit "Create Need", class: "px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 cursor-pointer" %>
+        <%= link_to "Cancel", needs_path, class: "px-6 py-3 bg-gray-200 dark:bg-gray-700 font-semibold rounded-md hover:bg-gray-300 dark:hover:bg-gray-600" %>
+      </div>
+
+      <% unless Current.user.admin? %>
+        <p class="text-sm text-gray-600 dark:text-gray-400 italic">
+          Note: Your need will be submitted for admin approval before it becomes visible to other members.
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

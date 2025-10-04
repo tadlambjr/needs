@@ -1,0 +1,157 @@
+<% content_for :title, "Admin Dashboard" %>
+
+<div class="max-w-7xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Users</dt>
+            <dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100"><%= @total_users %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Active Needs</dt>
+            <dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100"><%= @active_needs %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Pending Approval</dt>
+            <dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100"><%= @pending_needs %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+      <div class="flex items-center">
+        <div class="flex-shrink-0 bg-purple-500 rounded-md p-3">
+          <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total Signups</dt>
+            <dd class="text-2xl font-semibold text-gray-900 dark:text-gray-100"><%= @total_signups %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Recent Signups -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold">Recent Signups</h2>
+      </div>
+      <div class="p-6">
+        <% if @recent_signups.any? %>
+          <div class="space-y-4">
+            <% @recent_signups.each do |signup| %>
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-medium"><%= signup.user.name %></p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= link_to signup.need.title, need_path(signup.need), class: "hover:text-indigo-600" %>
+                  </p>
+                </div>
+                <span class="text-xs text-gray-500"><%= time_ago_in_words(signup.created_at) %> ago</span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 dark:text-gray-400">No recent signups</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Recent Needs -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-lg font-semibold">Recent Needs</h2>
+      </div>
+      <div class="p-6">
+        <% if @recent_needs.any? %>
+          <div class="space-y-4">
+            <% @recent_needs.each do |need| %>
+              <div class="flex items-center justify-between">
+                <div>
+                  <%= link_to need.title, need_path(need), class: "font-medium hover:text-indigo-600" %>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= need.status.titleize %> • <%= format_date(need.start_date) %>
+                  </p>
+                </div>
+                <span class="text-xs text-gray-500"><%= time_ago_in_words(need.created_at) %> ago</span>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-gray-500 dark:text-gray-400">No recent needs</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <%= link_to admin_users_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+        </svg>
+        Manage Users
+      <% end %>
+      <%= link_to categories_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+        </svg>
+        Categories
+      <% end %>
+      <%= link_to checklists_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+        </svg>
+        Checklists
+      <% end %>
+      <%= link_to admin_reports_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+        </svg>
+        Reports
+      <% end %>
+    </div>
+  </div>
+</div>

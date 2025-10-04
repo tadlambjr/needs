@@ -1,0 +1,130 @@
+<% content_for :title, "My Signups" %>
+
+<div class="max-w-6xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">My Signups</h1>
+
+  <!-- Upcoming Signups -->
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold mb-4">Upcoming</h2>
+    
+    <% if @signups.any? %>
+      <div class="grid gap-4">
+        <% @signups.each do |signup| %>
+          <% need = signup.need %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+            <div class="flex items-start justify-between">
+              <div class="flex-1">
+                <div class="flex items-center space-x-3 mb-2">
+                  <% if need.category.color.present? %>
+                    <div class="h-3 w-3 rounded-full flex-shrink-0" style="background-color: <%= need.category.color %>"></div>
+                  <% end %>
+                  <span class="text-xs font-medium text-gray-500 dark:text-gray-400"><%= need.category.name %></span>
+                  <span class="px-2 py-0.5 text-xs rounded-full <%= signup.status == 'signed_up' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' %>">
+                    <%= signup.status.titleize %>
+                  </span>
+                </div>
+                
+                <%= link_to need_path(need), class: "block" do %>
+                  <h3 class="text-lg font-semibold hover:text-indigo-600 dark:hover:text-indigo-400"><%= need.title %></h3>
+                <% end %>
+                
+                <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                  <div class="flex items-center">
+                    <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <%= format_date(need.start_date) %>
+                    <% if need.start_date != need.end_date %>
+                      - <%= format_date(need.end_date) %>
+                    <% end %>
+                  </div>
+                  
+                  <% if need.specific_time.present? %>
+                    <div class="flex items-center">
+                      <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <%= need.specific_time.strftime("%I:%M %p") %>
+                    </div>
+                  <% end %>
+                  
+                  <% if need.location.present? %>
+                    <div class="flex items-center">
+                      <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      <%= need.location %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              
+              <div class="ml-4 flex flex-col space-y-2">
+                <%= link_to "View Details", need_path(need), class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+                <% if signup.can_cancel? %>
+                  <%= button_to "Cancel Signup", cancel_signup_need_path(need), method: :delete, data: { confirm: "Are you sure you want to cancel this signup?" }, class: "text-sm text-red-600 dark:text-red-400 hover:text-red-800" %>
+                <% else %>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">Cannot cancel (< 24hrs)</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-lg shadow">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No upcoming signups</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Browse available needs to sign up.</p>
+        <div class="mt-6">
+          <%= link_to "Browse Needs", needs_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Past Signups -->
+  <% if @past_signups.any? %>
+    <div>
+      <h2 class="text-xl font-semibold mb-4">Past Activity</h2>
+      
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <thead class="bg-gray-50 dark:bg-gray-900">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Need</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <% @past_signups.each do |signup| %>
+              <% need = signup.need %>
+              <tr>
+                <td class="px-6 py-4">
+                  <div class="text-sm font-medium"><%= link_to need.title, need_path(need), class: "hover:text-indigo-600 dark:hover:text-indigo-400" %></div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400"><%= need.category.name %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                  <%= format_date(need.start_date) %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= signup.status == 'completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200' %>">
+                    <%= signup.status.titleize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <%= link_to "View", need_path(need), class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-900" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

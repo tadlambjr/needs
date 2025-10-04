@@ -1,0 +1,48 @@
+<% content_for :title, "New Checklist" %>
+
+<div class="max-w-2xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">New Checklist</h1>
+    <%= link_to "Back", checklists_path, class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= form_with model: @checklist, local: true do |f| %>
+      <%= render "shared/form_errors", object: @checklist %>
+
+      <div class="space-y-4">
+        <div>
+          <%= f.label :name, class: "block text-sm font-medium mb-1" %>
+          <%= f.text_field :name, class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700", placeholder: "e.g., Meal Delivery Checklist" %>
+        </div>
+
+        <div>
+          <%= f.label :description, class: "block text-sm font-medium mb-1" %>
+          <%= f.text_area :description, rows: 2, class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700", placeholder: "Brief description (optional)" %>
+        </div>
+
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+          <h3 class="text-sm font-medium mb-3">Checklist Items</h3>
+          
+          <div id="checklist-items">
+            <%= f.fields_for :checklist_items do |item_form| %>
+              <div class="mb-4 p-4 border border-gray-200 dark:border-gray-700 rounded-md">
+                <div class="space-y-3">
+                  <div>
+                    <%= item_form.label :description, "Item Description", class: "block text-sm font-medium mb-1" %>
+                    <%= item_form.text_area :description, rows: 2, class: "w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700", placeholder: "e.g., Confirm dietary restrictions" %>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex items-center justify-between">
+        <%= link_to "Cancel", checklists_path, class: "text-gray-600 dark:text-gray-400 hover:text-gray-800" %>
+        <%= f.submit "Create Checklist", class: "px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>

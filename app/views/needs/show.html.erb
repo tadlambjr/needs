@@ -1,0 +1,194 @@
+<div class="max-w-4xl mx-auto">
+  <!-- Back Link -->
+  <%= link_to needs_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800 mb-6" do %>
+    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+    </svg>
+    Back to All Needs
+  <% end %>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+    <!-- Header -->
+    <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-3">
+            <span class="px-3 py-1 text-sm font-medium rounded-full" style="background-color: <%= @need.category.color %>20; color: <%= @need.category.color %>">
+              <%= @need.category.name %>
+            </span>
+            <span class="px-3 py-1 text-sm rounded <%= status_badge_class(@need.status) %>">
+              <%= @need.status.titleize %>
+            </span>
+          </div>
+          <h1 class="text-3xl font-bold mb-2"><%= @need.title %></h1>
+          <p class="text-gray-600 dark:text-gray-400">
+            Created by <%= @need.creator.name %> on <%= format_date(@need.created_at) %>
+          </p>
+        </div>
+        
+        <% if Current.user.admin? || (@need.creator == Current.user && @need.draft?) %>
+          <div class="flex gap-2">
+            <%= link_to "Edit", edit_need_path(@need), class: "px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="prose dark:prose-invert max-w-none">
+        <p class="text-lg"><%= @need.description %></p>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="p-8 grid md:grid-cols-2 gap-6 border-b border-gray-200 dark:border-gray-700">
+      <div class="space-y-4">
+        <div class="flex items-start">
+          <svg class="w-5 h-5 mr-3 mt-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <div>
+            <p class="font-semibold">Date</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              <%= format_date(@need.start_date) %>
+              <% if @need.start_date != @need.end_date %>
+                - <%= format_date(@need.end_date) %>
+              <% end %>
+            </p>
+          </div>
+        </div>
+
+        <% if @need.time_slot.present? %>
+          <div class="flex items-start">
+            <svg class="w-5 h-5 mr-3 mt-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+              <p class="font-semibold">Time</p>
+              <p class="text-gray-600 dark:text-gray-400"><%= time_slot_label(@need.time_slot) %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="space-y-4">
+        <% if @need.location.present? %>
+          <div class="flex items-start">
+            <svg class="w-5 h-5 mr-3 mt-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <div>
+              <p class="font-semibold">Location</p>
+              <p class="text-gray-600 dark:text-gray-400"><%= @need.location %></p>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="flex items-start">
+          <svg class="w-5 h-5 mr-3 mt-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+          <div>
+            <p class="font-semibold">Volunteers Needed</p>
+            <p class="text-gray-600 dark:text-gray-400">
+              <span class="font-bold text-indigo-600"><%= @need.active_signups.count %></span> / <%= @need.volunteer_capacity %>
+              <% if @need.full? %>
+                <span class="ml-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Full</span>
+              <% end %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meal Train Calendar -->
+    <% if @need.allow_individual_day_signup? %>
+      <div class="p-8 border-b border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold mb-4">Sign Up for Specific Days</h2>
+        <div class="grid grid-cols-7 gap-2">
+          <% @need.days_array.each do |date| %>
+            <div class="border border-gray-200 dark:border-gray-700 rounded p-3 <%= @need.available_for_date?(date) ? 'hover:border-indigo-500 cursor-pointer' : 'bg-gray-100 dark:bg-gray-700' %>">
+              <p class="text-sm font-semibold"><%= date.strftime('%b %d') %></p>
+              <p class="text-xs text-gray-600 dark:text-gray-400"><%= date.strftime('%A') %></p>
+              <% if @need.available_for_date?(date) %>
+                <% if authenticated? %>
+                  <%= button_to "Sign Up", signup_need_path(@need, specific_date: date), method: :post, class: "mt-2 w-full px-2 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700" %>
+                <% end %>
+              <% else %>
+                <p class="mt-2 text-xs text-red-600">Filled</p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Signup Section -->
+    <% if @need.published? && authenticated? %>
+      <div class="p-8 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <% if @user_signup %>
+          <div class="bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-700 rounded-lg p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-semibold text-green-800 dark:text-green-200 mb-1">You're signed up!</h3>
+                <p class="text-sm text-green-700 dark:text-green-300">
+                  Signed up on <%= format_datetime(@user_signup.signed_up_at) %>
+                </p>
+              </div>
+              <% if @user_signup.can_cancel? %>
+                <%= button_to "Cancel Signup", cancel_signup_need_path(@need), method: :delete, 
+                    data: { confirm: "Are you sure you want to cancel your signup?" },
+                    class: "px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700" %>
+              <% end %>
+            </div>
+          </div>
+        <% elsif @can_signup %>
+          <% unless @need.allow_individual_day_signup? %>
+            <%= button_to "Sign Up to Volunteer", signup_need_path(@need), method: :post,
+                class: "w-full md:w-auto px-6 py-3 bg-indigo-600 text-white text-lg font-semibold rounded-md hover:bg-indigo-700" %>
+          <% end %>
+        <% elsif @need.full? %>
+          <p class="text-yellow-600 dark:text-yellow-400 font-medium">This need is currently full.</p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Volunteers List -->
+    <% if @signups.any? %>
+      <div class="p-8">
+        <h2 class="text-xl font-semibold mb-4">Volunteers (<%= @signups.count %>)</h2>
+        <div class="space-y-3">
+          <% @signups.each do |signup| %>
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+              <div>
+                <p class="font-semibold"><%= signup.user.name %></p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                  Signed up <%= time_ago_in_words(signup.signed_up_at) %> ago
+                  <% if signup.specific_date %>
+                    • <%= format_date(signup.specific_date) %>
+                  <% end %>
+                </p>
+              </div>
+              <span class="px-3 py-1 text-sm rounded <%= status_badge_class(signup.status) %>">
+                <%= signup.status.titleize %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Admin Actions -->
+    <% if Current.user.admin? && @need.member_initiated? && @need.draft? %>
+      <div class="p-8 bg-yellow-50 dark:bg-yellow-900 border-t border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold mb-4">Admin Actions</h2>
+        <div class="flex gap-4">
+          <%= button_to "Approve & Publish", approve_need_path(@need), method: :patch,
+              class: "px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700" %>
+          <%= button_to "Reject", reject_need_path(@need), method: :patch,
+              data: { confirm: "Are you sure you want to reject this need?" },
+              class: "px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

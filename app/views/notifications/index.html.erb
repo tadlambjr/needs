@@ -1,0 +1,55 @@
+<% content_for :title, "Notifications" %>
+
+<div class="max-w-4xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">Notifications</h1>
+    <% if @unread_count > 0 %>
+      <%= button_to "Mark All as Read", mark_all_as_read_notifications_path, method: :patch, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+    <% end %>
+  </div>
+
+  <% if @unread_count > 0 %>
+    <div class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+      <p class="text-sm text-blue-800 dark:text-blue-300">
+        You have <%= pluralize(@unread_count, 'unread notification') %>
+      </p>
+    </div>
+  <% end %>
+
+  <% if @notifications.any? %>
+    <div class="space-y-4">
+      <% @notifications.each do |notification| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 <%= 'border-l-4 border-indigo-500' unless notification.read? %>">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <h3 class="font-semibold <%= 'text-gray-900 dark:text-gray-100' unless notification.read? %> <%= 'text-gray-600 dark:text-gray-400' if notification.read? %>">
+                <%= notification.title %>
+              </h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <%= notification.message %>
+              </p>
+              <p class="mt-2 text-xs text-gray-500 dark:text-gray-500">
+                <%= time_ago_in_words(notification.created_at) %> ago
+              </p>
+            </div>
+            <% unless notification.read? %>
+              <%= button_to "Mark as Read", mark_as_read_notification_path(notification), method: :patch, class: "ml-4 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-6">
+      <%= paginate @notifications %>
+    </div>
+  <% else %>
+    <div class="text-center py-12">
+      <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+      </svg>
+      <h3 class="mt-4 text-sm font-medium text-gray-900 dark:text-gray-100">No notifications</h3>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">You're all caught up!</p>
+    </div>
+  <% end %>
+</div>
