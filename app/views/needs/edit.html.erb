@@ -99,7 +99,12 @@
           <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <h3 class="font-semibold mb-2 text-blue-900 dark:text-blue-200">Recurring Need</h3>
             <p class="text-sm text-blue-800 dark:text-blue-300">
-              This need repeats every <%= @need.recurrence_pattern&.titleize %>.
+              <% if @need.recurrence_start_day.present? && @need.recurrence_end_day.present? %>
+                <% day_names = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday] %>
+                This need repeats weekly from <%= day_names[@need.recurrence_start_day] %> to <%= day_names[@need.recurrence_end_day] %>.
+              <% else %>
+                This need repeats every <%= @need.recurrence_pattern&.titleize %>.
+              <% end %>
               <%= @need.recurrence_end_date ? "Until #{format_date(@need.recurrence_end_date)}" : "Ongoing" %>
             </p>
             <p class="text-xs text-blue-700 dark:text-blue-400 mt-2">

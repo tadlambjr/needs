@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_03_130141) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_06_122349) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -120,6 +120,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_03_130141) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "church_id", null: false
+    t.integer "recurrence_start_day"
+    t.integer "recurrence_end_day"
     t.index ["approved_by_id"], name: "index_needs_on_approved_by_id"
     t.index ["category_id"], name: "index_needs_on_category_id"
     t.index ["checklist_id"], name: "index_needs_on_checklist_id"

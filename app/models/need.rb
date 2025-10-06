@@ -25,6 +25,9 @@ class Need < ApplicationRecord
     morning: 0, afternoon: 1, evening: 2, specific_time: 3, all_day: 4 
   }, allow_nil: true
   
+  # Callbacks
+  before_validation :set_default_end_date_for_recurring
+  
   # Validations
   validates :title, presence: true, length: { minimum: 5, maximum: 100 }
   validates :description, length: { minimum: 10, maximum: 1000 }, allow_blank: true
@@ -92,7 +95,15 @@ class Need < ApplicationRecord
   
   private
   
+  def set_default_end_date_for_recurring
+    # For recurring needs without an end date, default to 52 weeks from start_date
+    if is_recurring? && end_date.blank? && start_date.present?
+      self.end_date = start_date + 52.weeks
+    end
+  end
+  
   def end_date_after_start_date
+    return if start_date.blank? || end_date.blank?
     errors.add(:end_date, "must be on or after start date") if end_date < start_date
   end
   
@@ -103,8 +114,17 @@ class Need < ApplicationRecord
   end
   
   def recurrence_pattern_required_if_recurring
-    if is_recurring? && recurrence_pattern.blank?
-      errors.add(:recurrence_pattern, "must be selected when creating a recurring need")
+    if is_recurring?
+      if recurrence_start_day.blank?
+        errors.add(:recurrence_start_day, "must be selected when creating a recurring need")
+      end
+      if recurrence_end_day.blank?
+        errors.add(:recurrence_end_day, "must be selected when creating a recurring need")
+      end
+      # Keep old validation for backwards compatibility
+      if recurrence_pattern.blank? && recurrence_start_day.blank?
+        errors.add(:recurrence_pattern, "must be selected when creating a recurring need")
+      end
     end
   end
   
@@ -126,9 +146,15 @@ class Need < ApplicationRecord
   end
   
   def generate_recurring_instances
+    # Handle new day-range recurring pattern
+    if is_recurring? && recurrence_start_day.present? && recurrence_end_day.present?
+      generate_day_range_instances
+      return
+    end
+    
+    # Handle legacy single-day recurrence pattern
     return unless is_recurring? && recurrence_pattern.present?
     
-    # Map day names to Date day of week numbers (0 = Sunday, 6 = Saturday)
     day_map = {
       'sunday' => 0, 'monday' => 1, 'tuesday' => 2, 'wednesday' => 3,
       'thursday' => 4, 'friday' => 5, 'saturday' => 6
@@ -137,19 +163,16 @@ class Need < ApplicationRecord
     target_day = day_map[recurrence_pattern]
     return unless target_day
     
-    # Start from next occurrence of the target day
     current_date = start_date
     until current_date.wday == target_day
       current_date += 1.day
     end
     
-    # Generate up to end_date (or recurrence_end_date for backwards compatibility)
     max_date = recurrence_end_date || end_date || (start_date + 52.weeks)
     weeks_generated = 0
     max_weeks = 52
     
     while current_date <= max_date && weeks_generated < max_weeks
-      # Skip the first occurrence as it's the parent need itself
       if current_date != start_date
         child_need = self.dup
         child_need.start_date = current_date
@@ -157,11 +180,52 @@ class Need < ApplicationRecord
         child_need.parent_need_id = self.id
         child_need.is_recurring = false
         child_need.recurrence_pattern = nil
+        child_need.recurrence_start_day = nil
+        child_need.recurrence_end_day = nil
         child_need.recurrence_end_date = nil
         child_need.save
       end
       
       current_date += 1.week
+      weeks_generated += 1
+    end
+  end
+  
+  def generate_day_range_instances
+    # Find the first occurrence of the start day
+    week_start = start_date
+    until week_start.wday == recurrence_start_day
+      week_start += 1.day
+    end
+    
+    # Calculate the end day of the first week
+    week_end = week_start
+    days_to_add = (recurrence_end_day - recurrence_start_day) % 7
+    week_end += days_to_add.days
+    
+    # Determine max date
+    max_date = recurrence_end_date || end_date || (start_date + 52.weeks)
+    weeks_generated = 0
+    max_weeks = 52
+    
+    while week_start <= max_date && weeks_generated < max_weeks
+      # Skip the first week if it matches the parent
+      unless week_start == start_date && week_end == end_date
+        child_need = self.dup
+        child_need.start_date = week_start
+        child_need.end_date = week_end
+        child_need.parent_need_id = self.id
+        child_need.is_recurring = false
+        child_need.recurrence_pattern = nil
+        child_need.recurrence_start_day = nil
+        child_need.recurrence_end_day = nil
+        child_need.recurrence_end_date = nil
+        child_need.save
+      end
+      
+      # Move to next week
+      week_start += 1.week
+      week_end += 1.week
       weeks_generated += 1
     end
   end

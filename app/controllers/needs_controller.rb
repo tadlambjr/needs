@@ -183,7 +183,7 @@ class NeedsController < ApplicationController
       :title, :description, :category_id, :start_date, :end_date, 
       :time_slot, :specific_time, :location, :volunteer_capacity,
       :allow_individual_day_signup, :is_recurring, :recurrence_pattern,
-      :recurrence_end_date, :checklist_id
+      :recurrence_start_day, :recurrence_end_day, :recurrence_end_date, :checklist_id
     )
   end
 
