@@ -89,6 +89,7 @@ class NeedsController < ApplicationController
     
     if signup&.cancel!(reason: params[:reason])
       redirect_to @need, notice: 'Your signup has been cancelled.'
+    else
       redirect_to @need, alert: 'Unable to cancel signup.'
     end
   end

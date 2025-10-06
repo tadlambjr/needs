@@ -54,6 +54,7 @@ class Need < ApplicationRecord
   before_create :auto_publish_admin_needs
   after_create :notify_admins_if_member_initiated
   after_create :generate_recurring_instances, if: :is_recurring?
+  after_commit :send_new_need_notifications, on: [:create, :update]
   
   # Instance methods
   def available_spots
@@ -140,9 +141,15 @@ class Need < ApplicationRecord
     end
   end
   
+  def send_new_need_notifications
+    # Only send when a need becomes published
+    return unless saved_change_to_status? && published?
+    ::NotificationService.notify_new_need(self)
+  end
+  
   def notify_admins_if_member_initiated
     return unless member_initiated?
-    # TODO: Send notifications to admins
+    ::NotificationService.notify_admins_new_member_need(self)
   end
   
   def generate_recurring_instances

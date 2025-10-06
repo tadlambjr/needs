@@ -25,9 +25,15 @@ class SettingsController < ApplicationController
   end
 
   def update_notification_preferences
-    params[:notification_preferences].each do |type, enabled|
+    Notification.notification_types.keys.each do |type|
       preference = Current.user.notification_preferences.find_or_initialize_by(notification_type: type)
-      preference.update(enabled: enabled == "1")
+      type_params = params[:notification_preferences]&.[](type) || {}
+      
+      preference.update(
+        email_enabled: type_params[:email_enabled] == "1",
+        sms_enabled: type_params[:sms_enabled] == "1",
+        in_app_enabled: type_params[:in_app_enabled] == "1"
+      )
     end
   end
 end

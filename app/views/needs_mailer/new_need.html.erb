@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #4F46E5;">New Need Available</h2>
+    
+    <p>Hi <%= @user.name %>,</p>
+    
+    <p>A new need has been posted at <%= @church.name %>:</p>
+    
+    <div style="background-color: #F3F4F6; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3 style="margin-top: 0; color: #4F46E5;"><%= @need.title %></h3>
+      <p><strong>Category:</strong> <%= @need.category.name %></p>
+      <p><strong>Date:</strong> <%= @need.start_date.strftime('%A, %B %d, %Y') %></p>
+      <% if @need.time_slot.present? %>
+        <p><strong>Time:</strong> <%= @need.time_slot.titleize %></p>
+      <% end %>
+      <% if @need.description.present? %>
+        <p><strong>Description:</strong> <%= @need.description %></p>
+      <% end %>
+      <p><strong>Spots Available:</strong> <%= @need.volunteer_capacity %></p>
+    </div>
+    
+    <p style="text-align: center;">
+      <a href="<%= root_url %>/needs/<%= @need.id %>" 
+         style="background-color: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block;">
+        View Need Details
+      </a>
+    </p>
+    
+    <hr style="border: none; border-top: 1px solid #E5E7EB; margin: 30px 0;">
+    
+    <p style="font-size: 12px; color: #6B7280;">
+      You're receiving this because you're a member of <%= @church.name %>. 
+      To manage your notification preferences, visit your 
+      <a href="<%= root_url %>/settings" style="color: #4F46E5;">Settings</a> page.
+    </p>
+  </div>
+</body>
+</html>

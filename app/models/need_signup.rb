@@ -55,10 +55,11 @@ class NeedSignup < ApplicationRecord
   end
   
   def send_confirmation_notification
-    # TODO: Send notification
+    ::NotificationService.notify_signup_confirmation(self)
   end
   
   def send_cancellation_notification
-    # TODO: Send notification if cancelled
+    return unless cancelled?
+    ::NotificationService.notify_need_cancelled(self)
   end
 end
