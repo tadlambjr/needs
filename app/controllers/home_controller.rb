@@ -13,6 +13,7 @@ class HomeController < ApplicationController
       @upcoming_needs = Need.member_visible
                            .upcoming
                            .where('start_date <= ?', Date.today + 42.days)
+                           .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
                            .includes(:category, :creator)
                            .limit(20)
       
@@ -24,6 +25,7 @@ class HomeController < ApplicationController
       @calendar_end = @calendar_start + 6.weeks
       @calendar_needs = Need.member_visible
                            .where('start_date <= ? AND end_date >= ?', @calendar_end, @calendar_start)
+                           .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
                            .includes(:category, need_signups: :user)
                            .order(:start_date)
       

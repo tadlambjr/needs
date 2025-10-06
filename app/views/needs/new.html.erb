@@ -11,7 +11,7 @@
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
     <h1 class="text-3xl font-bold mb-6">Create New Need</h1>
 
-    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot" } do |f| %>
+    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need" } do |f| %>
       <%= render "shared/form_errors", object: @need %>
 
       <!-- Title -->
@@ -22,7 +22,9 @@
 
       <!-- Description -->
       <div>
-        <%= f.label :description, class: "block text-sm font-medium mb-2" %>
+        <%= f.label :description, class: "block text-sm font-medium mb-2" do %>
+          Description <span class="text-gray-500 font-normal">(Optional)</span>
+        <% end %>
         <%= f.text_area :description, rows: 4, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700", placeholder: "Describe what help is needed..." %>
       </div>
 
@@ -87,6 +89,38 @@
         <div>
           <%= f.label :allow_individual_day_signup, "Allow volunteers to sign up for individual days (Meal Train)", class: "font-medium" %>
           <p class="text-sm text-gray-600 dark:text-gray-400">Enable this for multi-day needs where volunteers can choose specific dates</p>
+        </div>
+      </div>
+
+      <!-- Recurring Need -->
+      <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+        <div class="flex items-start mb-4">
+          <%= f.check_box :is_recurring, class: "mt-1 mr-2", data: { action: "change->recurring-need#toggle" } %>
+          <div>
+            <%= f.label :is_recurring, "Repeat weekly", class: "font-medium" %>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Create a recurring need that repeats every week on the same day. The End date above will be used as the last occurrence.</p>
+          </div>
+        </div>
+
+        <div data-recurring-need-target="fields" class="<%= @need.is_recurring? ? '' : 'hidden' %> space-y-4 ml-6 p-4 bg-gray-50 dark:bg-gray-900 rounded-md">
+          <div>
+            <%= f.label :recurrence_pattern, "Recurrence Pattern", class: "block text-sm font-medium mb-2" do %>
+              Recurrence Pattern <span class="text-red-600">*</span>
+            <% end %>
+            <%= f.select :recurrence_pattern,
+                options_for_select([
+                  ['Every Sunday', 'sunday'],
+                  ['Every Monday', 'monday'],
+                  ['Every Tuesday', 'tuesday'],
+                  ['Every Wednesday', 'wednesday'],
+                  ['Every Thursday', 'thursday'],
+                  ['Every Friday', 'friday'],
+                  ['Every Saturday', 'saturday']
+                ], @need.recurrence_pattern),
+                { include_blank: "Select day of week" },
+                class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+            <p class="text-xs text-gray-500 mt-1">Required: The need will repeat weekly on this day until the End date above</p>
+          </div>
         </div>
       </div>
 

@@ -22,9 +22,11 @@
         <% end %>
       </div>
 
-      <div class="prose dark:prose-invert max-w-none">
-        <p class="text-lg"><%= @need.description %></p>
-      </div>
+      <% if @need.description.present? %>
+        <div class="prose dark:prose-invert max-w-none">
+          <p class="text-lg"><%= @need.description %></p>
+        </div>
+      <% end %>
     </div>
 
     <!-- Details -->
@@ -192,6 +194,59 @@
             </div>
           <% end %>
         </div>
+      </div>
+    <% end %>
+
+    <!-- Recurring Instances -->
+    <% if @need.is_recurring? && @need.child_needs.any? %>
+      <div class="p-8 border-t border-gray-200 dark:border-gray-700">
+        <h2 class="text-xl font-semibold mb-4">Weekly Occurrences</h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          This need repeats every <%= @need.recurrence_pattern&.titleize %>. 
+          <%= @need.recurrence_end_date ? "Until #{format_date(@need.recurrence_end_date)}" : "Ongoing" %>
+        </p>
+        
+        <% @need.recurring_instances_grouped_by_month.each do |month, instances| %>
+          <div class="mb-6">
+            <h3 class="font-semibold text-lg mb-3"><%= month.strftime('%B %Y') %></h3>
+            <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              <% instances.each do |instance| %>
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 <%= instance.full? ? 'bg-gray-100 dark:bg-gray-800' : 'hover:border-indigo-400 dark:hover:border-indigo-500' %>">
+                  <div class="flex justify-between items-start mb-2">
+                    <span class="font-medium"><%= instance.start_date.strftime('%b %d') %></span>
+                    <% if instance.full? %>
+                      <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 rounded">Full</span>
+                    <% elsif instance.active_signups.any? %>
+                      <span class="px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded">
+                        <%= instance.active_signups.count %> / <%= instance.volunteer_capacity %>
+                      </span>
+                    <% else %>
+                      <span class="px-2 py-1 text-xs bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 rounded">
+                        Available
+                      </span>
+                    <% end %>
+                  </div>
+                  
+                  <% if instance.active_signups.any? %>
+                    <div class="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                      <%= instance.active_signups.map { |s| s.user.name }.join(', ') %>
+                    </div>
+                  <% end %>
+                  
+                  <% if authenticated? && !instance.full? %>
+                    <% user_signed_up = instance.active_signups.any? { |s| s.user_id == Current.user.id } %>
+                    <% if user_signed_up %>
+                      <span class="text-xs text-green-600 dark:text-green-400 font-medium">✓ You're signed up</span>
+                    <% else %>
+                      <%= button_to "Sign Up", signup_need_path(instance), method: :post, 
+                          class: "mt-2 w-full px-3 py-2 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-700" %>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
       </div>
     <% end %>
 

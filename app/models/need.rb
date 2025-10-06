@@ -27,12 +27,13 @@ class Need < ApplicationRecord
   
   # Validations
   validates :title, presence: true, length: { minimum: 5, maximum: 100 }
-  validates :description, presence: true, length: { minimum: 10, maximum: 1000 }
+  validates :description, length: { minimum: 10, maximum: 1000 }, allow_blank: true
   validates :start_date, presence: true
   validates :end_date, presence: true
   validates :volunteer_capacity, numericality: { only_integer: true, in: 1..20 }
   validate :end_date_after_start_date
   validate :specific_time_required_if_time_slot_is_specific
+  validate :recurrence_pattern_required_if_recurring
   
   # Scopes
   scope :published_needs, -> { where(status: :published) }
@@ -42,10 +43,14 @@ class Need < ApplicationRecord
   scope :member_visible, -> { where(status: [:published, :full, :in_progress, :completed]) }
   scope :pending_approval, -> { where(status: :draft, need_type: :member_initiated) }
   scope :with_openings, -> { published_needs.where('volunteer_capacity > (SELECT COUNT(*) FROM need_signups WHERE need_signups.need_id = needs.id AND need_signups.status = 0)') }
+  scope :parent_needs_only, -> { where(parent_need_id: nil) }
+  scope :recurring_instances, ->(parent_id) { where(parent_need_id: parent_id) }
   
   # Callbacks
   before_validation :set_need_type_based_on_creator
+  before_create :auto_publish_admin_needs
   after_create :notify_admins_if_member_initiated
+  after_create :generate_recurring_instances, if: :is_recurring?
   
   # Instance methods
   def available_spots
@@ -76,13 +81,18 @@ class Need < ApplicationRecord
   
   def available_for_date?(date)
     return false unless allow_individual_day_signup?
-    signups_for_date(date).count < volunteer_capacity
+    date_signups = need_signups.where(specific_date: date, status: [:signed_up, :waitlist]).count
+    date_signups < volunteer_capacity
+  end
+  
+  def recurring_instances_grouped_by_month
+    return [] unless is_recurring?
+    child_needs.order(:start_date).group_by { |need| need.start_date.beginning_of_month }
   end
   
   private
   
   def end_date_after_start_date
-    return if end_date.blank? || start_date.blank?
     errors.add(:end_date, "must be on or after start date") if end_date < start_date
   end
   
@@ -92,12 +102,67 @@ class Need < ApplicationRecord
     end
   end
   
+  def recurrence_pattern_required_if_recurring
+    if is_recurring? && recurrence_pattern.blank?
+      errors.add(:recurrence_pattern, "must be selected when creating a recurring need")
+    end
+  end
+  
   def set_need_type_based_on_creator
     self.need_type = creator&.admin? ? :admin_created : :member_initiated
+  end
+  
+  def auto_publish_admin_needs
+    if creator&.admin? && (draft? || status.nil?)
+      self.status = :published
+      self.approved_by = creator
+      self.approved_at = Time.current
+    end
   end
   
   def notify_admins_if_member_initiated
     return unless member_initiated?
     # TODO: Send notifications to admins
+  end
+  
+  def generate_recurring_instances
+    return unless is_recurring? && recurrence_pattern.present?
+    
+    # Map day names to Date day of week numbers (0 = Sunday, 6 = Saturday)
+    day_map = {
+      'sunday' => 0, 'monday' => 1, 'tuesday' => 2, 'wednesday' => 3,
+      'thursday' => 4, 'friday' => 5, 'saturday' => 6
+    }
+    
+    target_day = day_map[recurrence_pattern]
+    return unless target_day
+    
+    # Start from next occurrence of the target day
+    current_date = start_date
+    until current_date.wday == target_day
+      current_date += 1.day
+    end
+    
+    # Generate up to end_date (or recurrence_end_date for backwards compatibility)
+    max_date = recurrence_end_date || end_date || (start_date + 52.weeks)
+    weeks_generated = 0
+    max_weeks = 52
+    
+    while current_date <= max_date && weeks_generated < max_weeks
+      # Skip the first occurrence as it's the parent need itself
+      if current_date != start_date
+        child_need = self.dup
+        child_need.start_date = current_date
+        child_need.end_date = current_date
+        child_need.parent_need_id = self.id
+        child_need.is_recurring = false
+        child_need.recurrence_pattern = nil
+        child_need.recurrence_end_date = nil
+        child_need.save
+      end
+      
+      current_date += 1.week
+      weeks_generated += 1
+    end
   end
 end

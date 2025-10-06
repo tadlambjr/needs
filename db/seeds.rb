@@ -4,10 +4,10 @@ puts "Seeding database..."
 # Create Oikos Community Church
 puts "Creating Oikos Community Church..."
 church = Church.find_or_create_by!(name: 'Oikos Community Church') do |c|
-  c.address = ''
-  c.city = ''
-  c.state = ''
-  c.zip = ''
+  c.address = '1199 Alton Road'
+  c.city = 'Galloway'
+  c.state = 'OH'
+  c.zip = '43119'
   c.phone = ''
   c.email = ''
   c.timezone = 'America/New_York'
@@ -17,7 +17,7 @@ end
 # Create church admins
 puts "Creating church admins..."
 adam = church.users.find_or_create_by!(email_address: 'adam@bateswebdesign.com') do |user|
-  user.password = 'password123'
+  user.password = '1build-things'
   user.name = 'Adam Bates'
   user.phone = ''
   user.role = :admin
@@ -27,30 +27,21 @@ adam = church.users.find_or_create_by!(email_address: 'adam@bateswebdesign.com')
 end
 
 tad = church.users.find_or_create_by!(email_address: 'ri@tadlamb.com') do |user|
-  user.password = 'password123'
+  user.password = 'beautiful-word'
   user.name = 'Tad Lamb'
   user.phone = ''
   user.role = :admin
-  user.is_church_admin = true
+  user.is_church_admin = false
   user.email_verified = true
   user.active = true
 end
 
 # Create sample members
 puts "Creating sample members..."
-member1 = church.users.find_or_create_by!(email_address: 'john@example.com') do |user|
-  user.password = 'password123'
-  user.name = 'John Smith'
-  user.phone = '555-0101'
-  user.role = :member
-  user.email_verified = true
-  user.active = true
-end
-
-member2 = church.users.find_or_create_by!(email_address: 'jane@example.com') do |user|
-  user.password = 'password123'
-  user.name = 'Jane Doe'
-  user.phone = '555-0102'
+member1 = church.users.find_or_create_by!(email_address: 'rachel@tadlamb.com') do |user|
+  user.password = 'beautiful-word'
+  user.name = 'Rachel Lamb'
+  user.phone = '614-209-8914'
   user.role = :member
   user.email_verified = true
   user.active = true
@@ -76,7 +67,7 @@ cleaning_checklist = church.checklists.find_or_create_by!(name: 'Church Cleaning
 end
 
 unless cleaning_checklist.checklist_items.any?
-  ['Vacuum all carpets', 'Dust pews', 'Clean restrooms', 'Empty trash', 'Mop floors'].each_with_index do |task, index|
+  [ 'Vacuum all carpets', 'Dust pews', 'Clean restrooms', 'Empty trash', 'Mop floors' ].each_with_index do |task, index|
     cleaning_checklist.checklist_items.create!(description: task, display_order: index)
   end
 end
@@ -113,9 +104,3 @@ if meals_cat
 end
 
 puts "Seed data created successfully!"
-puts "Admin logins:"
-puts "  adam@bateswebdesign.com / password123"
-puts "  ri@tadlamb.com / password123"
-puts "Member logins:"
-puts "  john@example.com / password123"
-puts "  jane@example.com / password123"

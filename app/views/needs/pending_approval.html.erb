@@ -29,9 +29,11 @@
             </div>
           </div>
 
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
-            <%= need.description %>
-          </p>
+          <% if need.description.present? %>
+            <p class="text-gray-600 dark:text-gray-400 mb-4">
+              <%= need.description %>
+            </p>
+          <% end %>
 
           <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400 mb-4">
             <div class="flex items-center">

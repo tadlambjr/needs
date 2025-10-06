@@ -2,13 +2,22 @@
 // Run that command whenever you add a new controller or create them with
 // ./bin/rails generate stimulus controllerName
 
-import { application } from "./application"
+import { application } from "controllers/application"
 
-import DropdownController from "./dropdown_controller"
+import ChecklistController from "controllers/checklist_controller"
+application.register("checklist", ChecklistController)
+
+import DropdownController from "controllers/dropdown_controller"
 application.register("dropdown", DropdownController)
 
-import MobileMenuController from "./mobile_menu_controller"
+import MobileMenuController from "controllers/mobile_menu_controller"
 application.register("mobile-menu", MobileMenuController)
 
-import ThemeController from "./theme_controller"
+import RecurringNeedController from "controllers/recurring_need_controller"
+application.register("recurring-need", RecurringNeedController)
+
+import ThemeController from "controllers/theme_controller"
 application.register("theme", ThemeController)
+
+import TimeSlotController from "controllers/time_slot_controller"
+application.register("time-slot", TimeSlotController)

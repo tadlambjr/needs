@@ -3,7 +3,9 @@ class NeedsController < ApplicationController
   before_action :require_admin, only: [:approve, :reject, :destroy, :pending_approval]
   
   def index
-    @needs = current_church.needs.member_visible.upcoming.includes(:category, :creator, :need_signups)
+    @needs = current_church.needs.member_visible.upcoming
+                          .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
+                          .includes(:category, :creator, :need_signups)
     
     # Apply filters
     @needs = @needs.by_category(params[:category_id]) if params[:category_id].present?
@@ -110,6 +112,7 @@ class NeedsController < ApplicationController
     
     @calendar_needs = current_church.needs.member_visible
                           .where('start_date <= ? AND end_date >= ?', @calendar_end, @calendar_start)
+                          .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
                           .includes(:category, need_signups: :user)
     
     # Get user's signups for the calendar period
@@ -172,7 +175,7 @@ class NeedsController < ApplicationController
   private
 
   def set_need
-    @need = current_church.needs.find(params[:id])
+    @need = current_church.needs.includes(child_needs: [need_signups: :user]).find(params[:id])
   end
 
   def need_params
