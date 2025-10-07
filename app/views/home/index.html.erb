@@ -96,27 +96,25 @@
   <% content_for :container_class, '' %>
 
   <!-- Unauthenticated Landing Page -->
-  <div class="bg-white dark:bg-gray-900">
+  <div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
     <!-- Hero Section -->
-    <div class="bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
-      <div class="container mx-auto px-4 py-20">
-        <div class="max-w-4xl mx-auto text-center text-white">
-          <h1 class="text-5xl md:text-6xl font-bold mb-6">Church Needs</h1>
-          <p class="text-xl md:text-2xl mb-8 text-gray-800 dark:text-indigo-100">
-            An open-source platform to help churches coordinate volunteer opportunities and serve their communities
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <%= link_to new_registration_path, class: "px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg w-full sm:w-auto" do %>
-              Create Your Church Account
-            <% end %>
-            <%= link_to new_session_path, class: "px-8 py-4 bg-gray-800 dark:bg-indigo-800 text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-indigo-900 transition border-2 border-gray-700 dark:border-white/20 w-full sm:w-auto" do %>
-              Sign In
-            <% end %>
-          </div>
-          <p class="mt-6 text-gray-700 dark:text-indigo-200 text-sm">
-            MIT Licensed · Open Source · Self-Hostable
-          </p>
+    <div class="container mx-auto px-4 py-20">
+      <div class="max-w-4xl mx-auto text-center text-white">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">Church Needs</h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-900 dark:text-indigo-100 drop-shadow">
+          An open-source platform to help churches coordinate volunteer opportunities and serve their communities
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <%= link_to new_registration_path, class: "px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg w-full sm:w-auto" do %>
+            Create Your Church Account
+          <% end %>
+          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-indigo-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-indigo-900 transition border-2 border-gray-800 dark:border-white/20 w-full sm:w-auto" do %>
+            Sign In
+          <% end %>
         </div>
+        <p class="mt-6 text-gray-800 dark:text-indigo-200 text-sm drop-shadow">
+          MIT Licensed · Open Source · Self-Hostable
+        </p>
       </div>
     </div>
 
@@ -124,15 +122,15 @@
     <div class="container mx-auto px-4 py-20">
       <div class="max-w-6xl mx-auto">
         <div class="text-center mb-16">
-          <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">Features That Serve Your Church</h2>
-          <p class="text-xl text-gray-600 dark:text-gray-400">
+          <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-lg">Features That Serve Your Church</h2>
+          <p class="text-xl text-gray-800 dark:text-gray-200 drop-shadow">
             Everything you need to coordinate volunteer opportunities and care for your community
           </p>
         </div>
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           <!-- Feature 1 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-teal-100 dark:bg-teal-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
@@ -145,7 +143,7 @@
           </div>
 
           <!-- Feature 2 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -158,7 +156,7 @@
           </div>
 
           <!-- Feature 3 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -171,7 +169,7 @@
           </div>
 
           <!-- Feature 4 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -184,7 +182,7 @@
           </div>
 
           <!-- Feature 5 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
@@ -197,7 +195,7 @@
           </div>
 
           <!-- Feature 6 -->
-          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 hover:shadow-xl transition">
+          <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
             <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-4">
               <svg class="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
@@ -211,9 +209,9 @@
         </div>
 
         <!-- Additional Features -->
-        <div class="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8">
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-8 shadow-lg">
           <h3 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Built for Churches, By Design</h3>
-          <div class="grid md:grid-cols-2 gap-6 text-gray-700 dark:text-gray-300">
+          <div class="grid md:grid-cols-2 gap-6 text-gray-800 dark:text-gray-200">
             <div class="flex items-start gap-3">
               <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
@@ -256,19 +254,19 @@
     </div>
 
     <!-- Two Options Section -->
-    <div class="bg-gray-50 dark:bg-gray-800 py-20">
+    <div class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">Choose Your Path</h2>
-            <p class="text-xl text-gray-600 dark:text-gray-400">
+            <h2 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white drop-shadow-lg">Choose Your Path</h2>
+            <p class="text-xl text-gray-800 dark:text-gray-200 drop-shadow">
               Two flexible options to get your church started
             </p>
           </div>
 
           <div class="grid md:grid-cols-2 gap-8">
             <!-- Option 1: Create Account -->
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border-2 border-teal-200 dark:border-teal-800">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-8 border-2 border-teal-500/30 dark:border-teal-400/30 hover:bg-white dark:hover:bg-gray-800 transition">
               <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-teal-100 dark:bg-teal-900 rounded-full mb-4">
                   <svg class="w-8 h-8 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -312,7 +310,7 @@
             </div>
 
             <!-- Option 2: Self-Host -->
-            <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 border-2 border-gray-200 dark:border-gray-700">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-8 border-2 border-gray-400/30 dark:border-gray-500/30 hover:bg-white dark:hover:bg-gray-800 transition">
               <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
                   <svg class="w-8 h-8 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,10 +358,10 @@
     </div>
 
     <!-- Support Section -->
-    <div class="bg-white dark:bg-gray-900 py-20">
+    <div class="py-20">
       <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
-          <div class="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-12">
+          <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-12 shadow-lg">
             <h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Support This Project</h2>
             <p class="text-lg text-gray-700 dark:text-gray-300 mb-6">
               Church Needs is free and open-source under the MIT license. If this tool helps your church serve your community better, please consider supporting its development with a small donation.
@@ -375,7 +373,7 @@
               <a href="#" class="px-8 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition shadow-lg">
                 Make a Donation
               </a>
-              <a href="https://github.com/YOUR_GITHUB_USERNAME/needs" target="_blank" rel="noopener" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
+              <a href="https://github.com/tadlambjr/needs" target="_blank" rel="noopener" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
                 Star on GitHub
               </a>
             </div>
@@ -385,17 +383,17 @@
     </div>
 
     <!-- Footer CTA -->
-    <div class="bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900 py-16">
+    <div class="py-16 pb-24">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
-        <p class="text-xl text-gray-800 dark:text-indigo-100 mb-8">
+        <h2 class="text-3xl font-bold text-white drop-shadow-lg mb-4">Ready to Get Started?</h2>
+        <p class="text-xl text-gray-900 dark:text-indigo-100 drop-shadow mb-8">
           Join churches using Church Needs to better serve their communities
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <%= link_to new_registration_path, class: "px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg" do %>
             Create Account
           <% end %>
-          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-800 dark:bg-indigo-800 text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-indigo-900 transition border-2 border-gray-700 dark:border-white/20" do %>
+          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-indigo-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-indigo-900 transition border-2 border-gray-800 dark:border-white/20" do %>
             Sign In
           <% end %>
         </div>
