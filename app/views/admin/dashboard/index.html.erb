@@ -7,7 +7,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <div class="flex items-center">
-        <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+        <div class="flex-shrink-0 bg-teal-500 rounded-md p-3">
           <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
           </svg>
@@ -84,7 +84,7 @@
                 <div>
                   <p class="font-medium"><%= signup.user.name %></p>
                   <p class="text-sm text-gray-600 dark:text-gray-400">
-                    <%= link_to signup.need.title, need_path(signup.need), class: "hover:text-indigo-600" %>
+                    <%= link_to signup.need.title, need_path(signup.need), class: "hover:text-teal-600" %>
                   </p>
                 </div>
                 <span class="text-xs text-gray-500"><%= time_ago_in_words(signup.created_at) %> ago</span>
@@ -108,7 +108,7 @@
             <% @recent_needs.each do |need| %>
               <div class="flex items-center justify-between">
                 <div>
-                  <%= link_to need.title, need_path(need), class: "font-medium hover:text-indigo-600" %>
+                  <%= link_to need.title, need_path(need), class: "font-medium hover:text-teal-600" %>
                   <p class="text-sm text-gray-600 dark:text-gray-400">
                     <%= need.status.titleize %> • <%= format_date(need.start_date) %>
                   </p>
@@ -127,7 +127,7 @@
   <!-- Quick Actions -->
   <div class="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
     <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
       <%= link_to admin_users_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -145,6 +145,12 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
         </svg>
         Checklists
+      <% end %>
+      <%= link_to admin_rooms_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        </svg>
+        Manage Rooms
       <% end %>
       <%= link_to admin_reports_path, class: "flex items-center justify-center px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700" do %>
         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

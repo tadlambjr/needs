@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold">Manage Users</h1>
-    <%= link_to "Back to Dashboard", admin_root_path, class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+    <%= link_to "Back to Dashboard", admin_root_path, class: "text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
@@ -23,7 +23,7 @@
           <tr>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="h-10 w-10 flex-shrink-0 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
+                <div class="h-10 w-10 flex-shrink-0 bg-teal-600 rounded-full flex items-center justify-center text-white font-semibold">
                   <%= user.name.first.upcase %>
                 </div>
                 <div class="ml-4">
@@ -48,7 +48,7 @@
               <%= user.created_at.strftime("%b %d, %Y") %>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <%= link_to "Edit", edit_admin_user_path(user), class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-900" %>
+              <%= link_to "Edit", edit_admin_user_path(user), class: "text-teal-600 dark:text-teal-400 hover:text-teal-900" %>
             </td>
           </tr>
         <% end %>

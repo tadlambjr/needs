@@ -1,6 +1,6 @@
 <div class="max-w-3xl mx-auto">
   <div class="mb-6">
-    <%= link_to need_path(@need), class: "inline-flex items-center text-indigo-600 hover:text-indigo-800" do %>
+    <%= link_to need_path(@need), class: "inline-flex items-center text-teal-600 hover:text-teal-800" do %>
       <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
       </svg>
@@ -9,10 +9,23 @@
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-    <h1 class="text-3xl font-bold mb-6">Edit Need</h1>
+    <h1 class="text-3xl font-bold mb-6">Edit <%= @need.event? ? 'Event' : 'Need' %></h1>
 
-    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need" } do |f| %>
+    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need content-type" } do |f| %>
       <%= render "shared/form_errors", object: @need %>
+
+      <!-- Content Type -->
+      <div>
+        <%= f.label :content_type, "Type", class: "block text-sm font-medium mb-2" %>
+        <%= f.select :content_type,
+            options_for_select([
+              ['Need (Volunteer Opportunity)', 'need'],
+              ['Event (RSVP)', 'event']
+            ], @need.content_type),
+            {},
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            data: { action: "change->content-type#toggle", content_type_target: "select" } %>
+      </div>
 
       <!-- Title -->
       <div>
@@ -78,9 +91,11 @@
         <%= f.text_field :location, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
       </div>
 
-      <!-- Volunteer Capacity -->
+      <!-- Volunteer/Attendee Capacity -->
       <div>
-        <%= f.label :volunteer_capacity, "Number of Volunteers Needed", class: "block text-sm font-medium mb-2" %>
+        <%= f.label :volunteer_capacity, class: "block text-sm font-medium mb-2" do %>
+          <span data-content-type-target="capacityLabel"><%= @need.capacity_label %></span>
+        <% end %>
         <%= f.number_field :volunteer_capacity, min: 1, max: 20, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
       </div>
 
@@ -122,9 +137,40 @@
         </div>
       <% end %>
 
+      <!-- Existing Room Bookings -->
+      <% if @need.room_bookings.any? %>
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+          <h3 class="text-lg font-semibold mb-4">Current Room Bookings</h3>
+          <div class="space-y-3">
+            <% @need.room_bookings.each do |booking| %>
+              <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                <div class="flex-1">
+                  <div class="font-medium"><%= booking.room.name %></div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= booking.room.location if booking.room.location.present? %>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <% if booking.approved? %>
+                    <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Approved</span>
+                  <% elsif booking.rejected? %>
+                    <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Rejected</span>
+                  <% else %>
+                    <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Pending</span>
+                  <% end %>
+                  <%= button_to "Remove", room_booking_path(booking), method: :delete,
+                      data: { turbo_confirm: "Remove this room booking?" },
+                      class: "text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Submit Buttons -->
       <div class="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <%= f.submit "Update Need", class: "px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 cursor-pointer" %>
+        <%= f.submit "Update Need", class: "px-6 py-3 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 cursor-pointer" %>
         <%= link_to "Cancel", need_path(@need), class: "px-6 py-3 bg-gray-200 dark:bg-gray-700 font-semibold rounded-md hover:bg-gray-300 dark:hover:bg-gray-600" %>
         
         <% if Current.user.admin? %>

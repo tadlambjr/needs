@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_122349) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_124532) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -122,11 +122,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_122349) do
     t.integer "church_id", null: false
     t.integer "recurrence_start_day"
     t.integer "recurrence_end_day"
+    t.integer "content_type", default: 0, null: false
     t.index ["approved_by_id"], name: "index_needs_on_approved_by_id"
     t.index ["category_id"], name: "index_needs_on_category_id"
     t.index ["checklist_id"], name: "index_needs_on_checklist_id"
     t.index ["church_id"], name: "index_needs_on_church_id"
     t.index ["completed_by_id"], name: "index_needs_on_completed_by_id"
+    t.index ["content_type"], name: "index_needs_on_content_type"
     t.index ["creator_id"], name: "index_needs_on_creator_id"
     t.index ["need_type"], name: "index_needs_on_need_type"
     t.index ["parent_need_id"], name: "index_needs_on_parent_need_id"
@@ -160,6 +162,38 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_122349) do
     t.index ["related_type", "related_id"], name: "index_notifications_on_related_type_and_related_id"
     t.index ["user_id", "read"], name: "index_notifications_on_user_id_and_read"
     t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
+  create_table "room_bookings", force: :cascade do |t|
+    t.integer "need_id", null: false
+    t.integer "room_id", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "requested_by_id", null: false
+    t.integer "approved_by_id"
+    t.datetime "approved_at"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_room_bookings_on_approved_by_id"
+    t.index ["need_id", "room_id"], name: "index_room_bookings_on_need_id_and_room_id", unique: true
+    t.index ["need_id"], name: "index_room_bookings_on_need_id"
+    t.index ["requested_by_id"], name: "index_room_bookings_on_requested_by_id"
+    t.index ["room_id"], name: "index_room_bookings_on_room_id"
+    t.index ["status"], name: "index_room_bookings_on_status"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.integer "capacity"
+    t.integer "church_id", null: false
+    t.boolean "active", default: true, null: false
+    t.string "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_rooms_on_active"
+    t.index ["church_id", "name"], name: "index_rooms_on_church_id_and_name", unique: true
+    t.index ["church_id"], name: "index_rooms_on_church_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -208,6 +242,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_06_122349) do
   add_foreign_key "needs", "users", column: "creator_id"
   add_foreign_key "notification_preferences", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "room_bookings", "needs"
+  add_foreign_key "room_bookings", "rooms"
+  add_foreign_key "room_bookings", "users", column: "approved_by_id"
+  add_foreign_key "room_bookings", "users", column: "requested_by_id"
+  add_foreign_key "rooms", "churches"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "churches"
 end

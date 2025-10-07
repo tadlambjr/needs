@@ -11,6 +11,8 @@ class Need < ApplicationRecord
   has_many :need_signups, dependent: :destroy
   has_many :volunteers, through: :need_signups, source: :user
   has_many :child_needs, class_name: 'Need', foreign_key: :parent_need_id, dependent: :destroy
+  has_many :room_bookings, dependent: :destroy
+  has_many :rooms, through: :room_bookings
   
   # Enums
   enum :status, { 
@@ -24,6 +26,10 @@ class Need < ApplicationRecord
   enum :time_slot, { 
     morning: 0, afternoon: 1, evening: 2, specific_time: 3, all_day: 4 
   }, allow_nil: true
+  
+  enum :content_type, {
+    need: 0, event: 1
+  }, default: :need
   
   # Callbacks
   before_validation :set_default_end_date_for_recurring
@@ -92,6 +98,27 @@ class Need < ApplicationRecord
   def recurring_instances_grouped_by_month
     return [] unless is_recurring?
     child_needs.order(:start_date).group_by { |need| need.start_date.beginning_of_month }
+  end
+  
+  # Helper methods for event-specific terminology
+  def capacity_label
+    event? ? "Attendee Capacity" : "Volunteer Capacity"
+  end
+  
+  def signup_label
+    event? ? "RSVP" : "Sign Up"
+  end
+  
+  def signups_label
+    event? ? "RSVPs" : "Signups"
+  end
+  
+  def volunteer_label
+    event? ? "Attendee" : "Volunteer"
+  end
+  
+  def volunteers_label
+    event? ? "Attendees" : "Volunteers"
   end
   
   private

@@ -1,6 +1,6 @@
 <div class="max-w-3xl mx-auto">
   <div class="mb-6">
-    <%= link_to needs_path, class: "inline-flex items-center text-indigo-600 hover:text-indigo-800" do %>
+    <%= link_to needs_path, class: "inline-flex items-center text-teal-600 hover:text-teal-800" do %>
       <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
       </svg>
@@ -9,10 +9,24 @@
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-    <h1 class="text-3xl font-bold mb-6">Create New Need</h1>
+    <h1 class="text-3xl font-bold mb-6">Create New Need or Event</h1>
 
-    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need" } do |f| %>
+    <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need content-type" } do |f| %>
       <%= render "shared/form_errors", object: @need %>
+
+      <!-- Content Type -->
+      <div>
+        <%= f.label :content_type, "Type", class: "block text-sm font-medium mb-2" %>
+        <%= f.select :content_type,
+            options_for_select([
+              ['Need (Volunteer Opportunity)', 'need'],
+              ['Event (RSVP)', 'event']
+            ], @need.content_type),
+            {},
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            data: { action: "change->content-type#toggle", content_type_target: "select" } %>
+        <p class="text-sm text-gray-500 mt-1">Choose "Need" for volunteer opportunities or "Event" for gatherings with RSVPs</p>
+      </div>
 
       <!-- Title -->
       <div>
@@ -78,9 +92,11 @@
         <%= f.text_field :location, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700", placeholder: "e.g., 123 Main St or Church Building" %>
       </div>
 
-      <!-- Volunteer Capacity -->
+      <!-- Volunteer/Attendee Capacity -->
       <div>
-        <%= f.label :volunteer_capacity, "Number of Volunteers Needed", class: "block text-sm font-medium mb-2" %>
+        <%= f.label :volunteer_capacity, class: "block text-sm font-medium mb-2" do %>
+          <span data-content-type-target="capacityLabel">Number of Volunteers Needed</span>
+        <% end %>
         <%= f.number_field :volunteer_capacity, min: 1, max: 20, value: 1, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
       </div>
 
@@ -153,9 +169,45 @@
         </div>
       <% end %>
 
+      <!-- Room Booking (for events) -->
+      <% if @rooms.any? %>
+        <div data-content-type-target="roomBooking" class="<%= @need.event? ? '' : 'hidden' %> border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
+          <h3 class="text-lg font-semibold mb-4">Request Room Booking</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Select one or more rooms you'd like to book for this event. Room bookings require admin approval.</p>
+          
+          <div class="space-y-2">
+            <% @rooms.each do |room| %>
+              <div class="flex items-start p-3 border border-gray-200 dark:border-gray-700 rounded-md hover:bg-gray-50 dark:hover:bg-gray-900">
+                <%= check_box_tag "room_ids[]", room.id, false, { 
+                  id: "room_#{room.id}",
+                  class: "mt-1 mr-3"
+                } %>
+                <%= label_tag "room_#{room.id}", class: "flex-1" do %>
+                  <div class="font-medium"><%= room.name %></div>
+                  <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <%= room.location %><%= " • " if room.location.present? && room.capacity.present? %><%= "Capacity: #{room.capacity}" if room.capacity.present? %>
+                  </div>
+                  <% if room.description.present? %>
+                    <div class="text-sm text-gray-500 dark:text-gray-500 mt-1"><%= room.description %></div>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+          
+          <div class="mt-4">
+            <%= label_tag "room_booking_notes", "Booking Notes (Optional)", class: "block text-sm font-medium mb-2" %>
+            <%= text_area_tag "room_booking_notes", "", 
+                rows: 3,
+                class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+                placeholder: "Any special requirements or notes for the room booking..." %>
+          </div>
+        </div>
+      <% end %>
+
       <!-- Submit Buttons -->
       <div class="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <%= f.submit "Create Need", class: "px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 cursor-pointer" %>
+        <%= f.submit "Create Need", class: "px-6 py-3 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 cursor-pointer" %>
         <%= link_to "Cancel", needs_path, class: "px-6 py-3 bg-gray-200 dark:bg-gray-700 font-semibold rounded-md hover:bg-gray-300 dark:hover:bg-gray-600" %>
       </div>
 

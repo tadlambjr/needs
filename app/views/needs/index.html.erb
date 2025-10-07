@@ -4,7 +4,7 @@
       <h1 class="text-3xl font-bold mb-2">All Needs</h1>
       <p class="text-gray-600 dark:text-gray-400">Browse and sign up for needs in our community</p>
     </div>
-    <%= link_to "Create New Need", new_need_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700" %>
+    <%= link_to "Create New Need", new_need_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md font-medium hover:bg-teal-700" %>
   </div>
 
   <!-- Filters and Search -->
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div class="flex gap-2">
-        <%= f.submit "Filter", class: "px-4 py-2 bg-indigo-600 text-white rounded-md font-medium hover:bg-indigo-700 cursor-pointer" %>
+        <%= f.submit "Filter", class: "px-4 py-2 bg-teal-600 text-white rounded-md font-medium hover:bg-teal-700 cursor-pointer" %>
         <%= link_to "Clear Filters", needs_path, class: "px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600" %>
       </div>
     <% end %>
@@ -34,7 +34,7 @@
 
   <!-- Category Quick Filters -->
   <div class="mb-6 flex flex-wrap gap-2">
-    <%= link_to "All", needs_path, class: "px-4 py-2 rounded-full #{params[:category_id].blank? ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'} text-sm font-medium hover:bg-indigo-500" %>
+    <%= link_to "All", needs_path, class: "px-4 py-2 rounded-full #{params[:category_id].blank? ? 'bg-teal-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'} text-sm font-medium hover:bg-teal-500" %>
     <% @categories.each do |category| %>
       <%= link_to category.name, needs_path(category_id: category.id), class: "px-4 py-2 rounded-full #{params[:category_id].to_i == category.id ? 'text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'} text-sm font-medium hover:opacity-80", style: params[:category_id].to_i == category.id ? "background-color: #{category.color}" : "" %>
     <% end %>
@@ -54,7 +54,7 @@
       </svg>
       <h3 class="text-xl font-semibold mb-2">No needs found</h3>
       <p class="text-gray-600 dark:text-gray-400 mb-4">Try adjusting your filters or check back later.</p>
-      <%= link_to "Clear Filters", needs_path, class: "text-indigo-600 hover:text-indigo-800 font-medium" %>
+      <%= link_to "Clear Filters", needs_path, class: "text-teal-600 hover:text-teal-800 font-medium" %>
     </div>
   <% end %>
 </div>

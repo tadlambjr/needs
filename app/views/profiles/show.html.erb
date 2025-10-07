@@ -3,12 +3,12 @@
 <div class="max-w-4xl mx-auto">
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold">My Profile</h1>
-    <%= link_to "Edit Profile", edit_profile_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+    <%= link_to "Edit Profile", edit_profile_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700" %>
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
     <div class="flex items-center space-x-4 mb-6">
-      <div class="h-20 w-20 rounded-full bg-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
+      <div class="h-20 w-20 rounded-full bg-teal-600 flex items-center justify-center text-white text-2xl font-bold">
         <%= @user.name.first.upcase %>
       </div>
       <div>
@@ -48,15 +48,15 @@
       <% if @upcoming_signups.any? %>
         <div class="space-y-3">
           <% @upcoming_signups.each do |signup| %>
-            <div class="border-l-4 border-indigo-500 pl-3">
-              <%= link_to signup.need.title, need_path(signup.need), class: "font-medium hover:text-indigo-600" %>
+            <div class="border-l-4 border-teal-500 pl-3">
+              <%= link_to signup.need.title, need_path(signup.need), class: "font-medium hover:text-teal-600" %>
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 <%= format_date(signup.need.start_date) %>
               </p>
             </div>
           <% end %>
         </div>
-        <%= link_to "View All", my_needs_needs_path, class: "mt-4 inline-block text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+        <%= link_to "View All", my_needs_needs_path, class: "mt-4 inline-block text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
       <% else %>
         <p class="text-gray-500 dark:text-gray-400">No upcoming signups</p>
       <% end %>
@@ -69,7 +69,7 @@
         <div class="space-y-3">
           <% @completed_signups.each do |signup| %>
             <div class="border-l-4 border-green-500 pl-3">
-              <%= link_to signup.need.title, need_path(signup.need), class: "font-medium hover:text-indigo-600" %>
+              <%= link_to signup.need.title, need_path(signup.need), class: "font-medium hover:text-teal-600" %>
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 Completed <%= time_ago_in_words(signup.completed_at || signup.need.end_date) %> ago
               </p>

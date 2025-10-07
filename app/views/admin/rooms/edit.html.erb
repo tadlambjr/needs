@@ -1,0 +1,11 @@
+<div class="mb-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Rooms", admin_rooms_path, class: "text-teal-600 hover:text-teal-800 dark:text-teal-400 dark:hover:text-teal-300" %>
+  </div>
+  
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Edit Room</h1>
+  
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <%= render "form", room: @room %>
+  </div>
+</div>

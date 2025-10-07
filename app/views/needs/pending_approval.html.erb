@@ -3,11 +3,82 @@
 <div class="max-w-7xl mx-auto">
   <div class="mb-6">
     <h1 class="text-3xl font-bold mb-2">Pending Approvals</h1>
-    <p class="text-gray-600 dark:text-gray-400">Review and approve member-submitted needs</p>
+    <p class="text-gray-600 dark:text-gray-400">Review and approve member-submitted needs and room bookings</p>
   </div>
+  
+  <!-- Room Booking Approvals -->
+  <% if @pending_room_bookings.any? %>
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Room Booking Requests</h2>
+      <div class="space-y-4">
+        <% @pending_room_bookings.each do |need| %>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="px-3 py-1 text-xs font-medium rounded-full" style="background-color: <%= need.category.color %>20; color: <%= need.category.color %>">
+                    <%= need.category.name %>
+                  </span>
+                  <span class="px-2 py-1 text-xs rounded bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
+                    Room Booking Pending
+                  </span>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">
+                  <%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %>
+                </h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <%= need.event? ? "Event" : "Need" %> by <strong><%= need.creator.name %></strong>
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <%= format_date(need.start_date) %>
+                  <% if need.start_date != need.end_date %>
+                    - <%= format_date(need.end_date) %>
+                  <% end %>
+                </p>
+              </div>
+            </div>
+            
+            <!-- Room Booking Details -->
+            <div class="mt-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <h4 class="font-semibold mb-3">Requested Rooms:</h4>
+              <div class="space-y-3">
+                <% need.room_bookings.pending_approval.each do |booking| %>
+                  <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                    <div class="flex-1">
+                      <div class="font-medium"><%= booking.room.name %></div>
+                      <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <%= booking.room.location if booking.room.location.present? %>
+                        <%= " • Capacity: #{booking.room.capacity}" if booking.room.capacity.present? %>
+                      </div>
+                      <% if booking.notes.present? %>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                          <strong>Notes:</strong> <%= booking.notes %>
+                        </div>
+                      <% end %>
+                      <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                        Requested by <%= booking.requested_by.name %>
+                      </div>
+                    </div>
+                    <div class="flex gap-2 ml-4">
+                      <%= button_to "Approve", approve_room_booking_path(booking), method: :patch,
+                          class: "px-3 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700" %>
+                      <%= button_to "Reject", reject_room_booking_path(booking), method: :patch,
+                          class: "px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700" %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <% if @needs.any? %>
-    <div class="space-y-4">
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Need/Event Approvals</h2>
+      <div class="space-y-4">
       <% @needs.each do |need| %>
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <div class="flex items-start justify-between mb-3">
@@ -21,7 +92,7 @@
                 </span>
               </div>
               <h3 class="text-xl font-semibold mb-2">
-                <%= link_to need.title, need_path(need), class: "hover:text-indigo-600 dark:hover:text-indigo-400" %>
+                <%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %>
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                 Submitted by <strong><%= need.creator.name %></strong> on <%= need.created_at.strftime("%B %d, %Y") %>
@@ -88,14 +159,17 @@
           </div>
         </div>
       <% end %>
+      </div>
     </div>
-  <% else %>
+  <% end %>
+  
+  <% if @needs.empty? && @pending_room_bookings.empty? %>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-12 text-center">
       <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
       <h3 class="text-xl font-semibold mb-2">No Pending Approvals</h3>
-      <p class="text-gray-600 dark:text-gray-400">All member-submitted needs have been reviewed.</p>
+      <p class="text-gray-600 dark:text-gray-400">All member-submitted needs and room bookings have been reviewed.</p>
     </div>
   <% end %>
 </div>

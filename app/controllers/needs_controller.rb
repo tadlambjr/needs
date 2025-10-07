@@ -32,6 +32,7 @@ class NeedsController < ApplicationController
     @need = current_church.needs.new(creator: Current.user)
     @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
     @checklists = current_church.checklists.active.order(:name)
+    @rooms = current_church.rooms.active.ordered
   end
 
   def create
@@ -39,10 +40,22 @@ class NeedsController < ApplicationController
     @need.creator = Current.user
     
     if @need.save
+      # Create room bookings if any rooms were selected
+      if params[:room_ids].present?
+        params[:room_ids].reject(&:blank?).each do |room_id|
+          @need.room_bookings.create(
+            room_id: room_id,
+            requested_by: Current.user,
+            notes: params[:room_booking_notes]
+          )
+        end
+      end
+      
       redirect_to @need, notice: 'Need was successfully created.'
     else
       @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
       @checklists = current_church.checklists.active.order(:name)
+      @rooms = current_church.rooms.active.ordered
       render :new, status: :unprocessable_entity
     end
   end
@@ -51,6 +64,7 @@ class NeedsController < ApplicationController
     authorize_edit!
     @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
     @checklists = current_church.checklists.active.order(:name)
+    @rooms = current_church.rooms.active.ordered
   end
 
   def update
@@ -61,6 +75,7 @@ class NeedsController < ApplicationController
     else
       @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
       @checklists = current_church.checklists.active.order(:name)
+      @rooms = current_church.rooms.active.ordered
       render :edit, status: :unprocessable_entity
     end
   end
@@ -145,6 +160,11 @@ class NeedsController < ApplicationController
 
   def pending_approval
     @needs = current_church.needs.pending_approval.includes(:creator, :category).order(created_at: :desc)
+    @pending_room_bookings = current_church.needs.joins(:room_bookings)
+                                            .merge(RoomBooking.pending_approval)
+                                            .includes(:creator, :category, room_bookings: [:room, :requested_by])
+                                            .distinct
+                                            .order('room_bookings.created_at DESC')
   end
 
   def approve
@@ -184,7 +204,8 @@ class NeedsController < ApplicationController
       :title, :description, :category_id, :start_date, :end_date, 
       :time_slot, :specific_time, :location, :volunteer_capacity,
       :allow_individual_day_signup, :is_recurring, :recurrence_pattern,
-      :recurrence_start_day, :recurrence_end_day, :recurrence_end_date, :checklist_id
+      :recurrence_start_day, :recurrence_end_day, :recurrence_end_date, :checklist_id,
+      :content_type
     )
   end
 

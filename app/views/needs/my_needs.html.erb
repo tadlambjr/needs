@@ -25,7 +25,7 @@
                 </div>
                 
                 <%= link_to need_path(need), class: "block" do %>
-                  <h3 class="text-lg font-semibold hover:text-indigo-600 dark:hover:text-indigo-400"><%= need.title %></h3>
+                  <h3 class="text-lg font-semibold hover:text-teal-600 dark:hover:text-teal-400"><%= need.title %></h3>
                 <% end %>
                 
                 <div class="mt-2 flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
@@ -61,7 +61,7 @@
               </div>
               
               <div class="ml-4 flex flex-col space-y-2">
-                <%= link_to "View Details", need_path(need), class: "text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+                <%= link_to "View Details", need_path(need), class: "text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
                 <% if signup.can_cancel? %>
                   <%= button_to "Cancel Signup", cancel_signup_need_path(need), method: :delete, data: { confirm: "Are you sure you want to cancel this signup?" }, class: "text-sm text-red-600 dark:text-red-400 hover:text-red-800" %>
                 <% else %>
@@ -80,7 +80,7 @@
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No upcoming signups</h3>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Browse available needs to sign up.</p>
         <div class="mt-6">
-          <%= link_to "Browse Needs", needs_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+          <%= link_to "Browse Needs", needs_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700" %>
         </div>
       </div>
     <% end %>
@@ -106,7 +106,7 @@
               <% need = signup.need %>
               <tr>
                 <td class="px-6 py-4">
-                  <div class="text-sm font-medium"><%= link_to need.title, need_path(need), class: "hover:text-indigo-600 dark:hover:text-indigo-400" %></div>
+                  <div class="text-sm font-medium"><%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %></div>
                   <div class="text-xs text-gray-500 dark:text-gray-400"><%= need.category.name %></div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -118,7 +118,7 @@
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <%= link_to "View", need_path(need), class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-900" %>
+                  <%= link_to "View", need_path(need), class: "text-teal-600 dark:text-teal-400 hover:text-teal-900" %>
                 </td>
               </tr>
             <% end %>

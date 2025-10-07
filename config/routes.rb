@@ -63,6 +63,15 @@ Rails.application.routes.draw do
     root "dashboard#index"
     resources :users, only: [:index, :edit, :update]
     resources :reports, only: [:index]
+    resources :rooms
+  end
+  
+  # Room booking routes
+  resources :room_bookings, only: [:create, :destroy] do
+    member do
+      patch :approve
+      patch :reject
+    end
   end
   
   # Health check

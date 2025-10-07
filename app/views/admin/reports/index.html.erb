@@ -3,7 +3,7 @@
 <div class="max-w-7xl mx-auto">
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold">Reports</h1>
-    <%= link_to "Back to Dashboard", admin_root_path, class: "text-indigo-600 dark:text-indigo-400 hover:text-indigo-800" %>
+    <%= link_to "Back to Dashboard", admin_root_path, class: "text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
   </div>
 
   <!-- Date Range Filter -->
@@ -14,7 +14,7 @@
           [['Last 7 Days', '7'], ['Last 30 Days', '30'], ['Last 90 Days', '90'], ['Last Year', '365']], 
           { selected: @date_range },
           class: "px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700" %>
-      <%= f.submit "Update", class: "px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" %>
+      <%= f.submit "Update", class: "px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700" %>
     <% end %>
   </div>
 
@@ -30,7 +30,7 @@
               <span class="text-sm text-gray-600 dark:text-gray-400"><%= count %></span>
             </div>
             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div class="bg-indigo-600 h-2 rounded-full" style="width: <%= (count.to_f / @needs_by_status.values.sum * 100).round %>%"></div>
+              <div class="bg-teal-600 h-2 rounded-full" style="width: <%= (count.to_f / @needs_by_status.values.sum * 100).round %>%"></div>
             </div>
           <% end %>
         </div>
@@ -85,7 +85,7 @@
       <div class="space-y-4">
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Total Signups</p>
-          <p class="text-3xl font-bold text-indigo-600"><%= @signups_by_user.values.sum %></p>
+          <p class="text-3xl font-bold text-teal-600"><%= @signups_by_user.values.sum %></p>
         </div>
         <div>
           <p class="text-sm text-gray-500 dark:text-gray-400">Unique Volunteers</p>

@@ -7,6 +7,9 @@ import { application } from "controllers/application"
 import ChecklistController from "controllers/checklist_controller"
 application.register("checklist", ChecklistController)
 
+import ContentTypeController from "controllers/content_type_controller"
+application.register("content-type", ContentTypeController)
+
 import DropdownController from "controllers/dropdown_controller"
 application.register("dropdown", DropdownController)
 

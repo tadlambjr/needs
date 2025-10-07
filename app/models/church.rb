@@ -4,6 +4,7 @@ class Church < ApplicationRecord
   has_many :categories, dependent: :destroy
   has_many :needs, dependent: :destroy
   has_many :checklists, dependent: :destroy
+  has_many :rooms, dependent: :destroy
   
   # Validations
   validates :name, presence: true, length: { minimum: 2, maximum: 200 }
