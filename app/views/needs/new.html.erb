@@ -9,23 +9,27 @@
   </div>
 
   <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-    <h1 class="text-3xl font-bold mb-6">Create New Need or Event</h1>
+    <h1 class="text-3xl font-bold mb-2">Create New Need or Event</h1>
+    <p class="text-gray-600 dark:text-gray-400 mb-6">Choose the type below to get started</p>
 
     <%= form_with model: @need, class: "space-y-6", data: { controller: "time-slot recurring-need content-type" } do |f| %>
       <%= render "shared/form_errors", object: @need %>
 
       <!-- Content Type -->
-      <div>
-        <%= f.label :content_type, "Type", class: "block text-sm font-medium mb-2" %>
+      <div class="border-2 border-teal-500 rounded-lg p-4 bg-teal-50 dark:bg-teal-900/20">
+        <%= f.label :content_type, "What would you like to create?", class: "block text-base font-semibold mb-3" %>
         <%= f.select :content_type,
             options_for_select([
               ['Need (Volunteer Opportunity)', 'need'],
               ['Event (RSVP)', 'event']
             ], @need.content_type),
             {},
-            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 font-medium",
             data: { action: "change->content-type#toggle", content_type_target: "select" } %>
-        <p class="text-sm text-gray-500 mt-1">Choose "Need" for volunteer opportunities or "Event" for gatherings with RSVPs</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+          <strong>Need:</strong> Volunteer opportunities where people can sign up to help<br>
+          <strong>Event:</strong> Gatherings or activities where people can RSVP to attend
+        </p>
       </div>
 
       <!-- Title -->
@@ -100,8 +104,8 @@
         <%= f.number_field :volunteer_capacity, min: 1, max: 20, value: 1, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
       </div>
 
-      <!-- Multi-day signup -->
-      <div class="flex items-start">
+      <!-- Multi-day signup (Needs only) -->
+      <div data-content-type-target="mealTrain" class="flex items-start">
         <%= f.check_box :allow_individual_day_signup, class: "mt-1 mr-2" %>
         <div>
           <%= f.label :allow_individual_day_signup, "Allow volunteers to sign up for individual days (Meal Train)", class: "font-medium" %>
@@ -109,13 +113,13 @@
         </div>
       </div>
 
-      <!-- Recurring Need -->
+      <!-- Recurring -->
       <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
         <div class="flex items-start mb-4">
           <%= f.check_box :is_recurring, class: "mt-1 mr-2", data: { action: "change->recurring-need#toggle" } %>
           <div>
             <%= f.label :is_recurring, "Repeat weekly", class: "font-medium" %>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Create a recurring need that repeats every week on the same day. The End date above will be used as the last occurrence.</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Create a recurring event or need that repeats every week on the same day. The End date above will be used as the last occurrence.</p>
           </div>
         </div>
 
@@ -157,15 +161,30 @@
                   class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
             </div>
           </div>
-          <p class="text-xs text-gray-500">The need will repeat weekly from Start Day to End Day. For example, select Monday to Saturday for a weekly task that spans the work week.</p>
+          <p class="text-xs text-gray-500">This will repeat weekly from Start Day to End Day. For example, select Monday to Saturday for a weekly event that spans the work week.</p>
         </div>
       </div>
 
       <!-- Checklist (optional) -->
-      <% if @checklists.any? %>
+      <% if @checklists_needs.any? || @checklists_events.any? %>
         <div>
           <%= f.label :checklist_id, "Checklist (Optional)", class: "block text-sm font-medium mb-2" %>
-          <%= f.collection_select :checklist_id, @checklists, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+          
+          <!-- Needs Checklist -->
+          <div data-content-type-target="checklistNeed">
+            <%= f.collection_select :checklist_id, @checklists_needs, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+            <% if @checklists_needs.empty? %>
+              <p class="text-sm text-gray-500 mt-1 italic">No checklists available for needs. <%= link_to "Create one", new_checklist_path, class: "text-teal-600 hover:underline" %></p>
+            <% end %>
+          </div>
+          
+          <!-- Events Checklist -->
+          <div data-content-type-target="checklistEvent" class="hidden">
+            <%= f.collection_select :checklist_id, @checklists_events, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+            <% if @checklists_events.empty? %>
+              <p class="text-sm text-gray-500 mt-1 italic">No checklists available for events. <%= link_to "Create one", new_checklist_path, class: "text-teal-600 hover:underline" %></p>
+            <% end %>
+          </div>
         </div>
       <% end %>
 
@@ -207,7 +226,7 @@
 
       <!-- Submit Buttons -->
       <div class="flex gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <%= f.submit "Create Need", class: "px-6 py-3 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 cursor-pointer" %>
+        <%= f.submit "Create", class: "px-6 py-3 bg-teal-600 text-white font-semibold rounded-md hover:bg-teal-700 cursor-pointer" %>
         <%= link_to "Cancel", needs_path, class: "px-6 py-3 bg-gray-200 dark:bg-gray-700 font-semibold rounded-md hover:bg-gray-300 dark:hover:bg-gray-600" %>
       </div>
 

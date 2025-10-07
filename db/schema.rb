@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_07_124532) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_154414) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -56,7 +56,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_124532) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "church_id", null: false
+    t.integer "content_type", default: 0, null: false
     t.index ["church_id"], name: "index_checklists_on_church_id"
+    t.index ["content_type"], name: "index_checklists_on_content_type"
     t.index ["created_by_id"], name: "index_checklists_on_created_by_id"
   end
 

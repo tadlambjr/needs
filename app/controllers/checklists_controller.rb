@@ -55,6 +55,7 @@ class ChecklistsController < ApplicationController
     params.require(:checklist).permit(
       :name, 
       :description,
+      :content_type,
       checklist_items_attributes: [:id, :description, :display_order, :_destroy]
     )
   end

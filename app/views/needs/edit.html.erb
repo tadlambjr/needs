@@ -99,8 +99,8 @@
         <%= f.number_field :volunteer_capacity, min: 1, max: 20, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
       </div>
 
-      <!-- Multi-day signup -->
-      <div class="flex items-start">
+      <!-- Multi-day signup (Needs only) -->
+      <div data-content-type-target="mealTrain" class="flex items-start">
         <%= f.check_box :allow_individual_day_signup, class: "mt-1 mr-2" %>
         <div>
           <%= f.label :allow_individual_day_signup, "Allow volunteers to sign up for individual days (Meal Train)", class: "font-medium" %>
@@ -108,17 +108,17 @@
         </div>
       </div>
 
-      <!-- Recurring Need Info (Read Only) -->
+      <!-- Recurring Info (Read Only) -->
       <% if @need.is_recurring? %>
         <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
           <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <h3 class="font-semibold mb-2 text-blue-900 dark:text-blue-200">Recurring Need</h3>
+            <h3 class="font-semibold mb-2 text-blue-900 dark:text-blue-200">Recurring <%= @need.event? ? 'Event' : 'Need' %></h3>
             <p class="text-sm text-blue-800 dark:text-blue-300">
               <% if @need.recurrence_start_day.present? && @need.recurrence_end_day.present? %>
                 <% day_names = %w[Sunday Monday Tuesday Wednesday Thursday Friday Saturday] %>
-                This need repeats weekly from <%= day_names[@need.recurrence_start_day] %> to <%= day_names[@need.recurrence_end_day] %>.
+                This <%= @need.event? ? 'event' : 'need' %> repeats weekly from <%= day_names[@need.recurrence_start_day] %> to <%= day_names[@need.recurrence_end_day] %>.
               <% else %>
-                This need repeats every <%= @need.recurrence_pattern&.titleize %>.
+                This <%= @need.event? ? 'event' : 'need' %> repeats every <%= @need.recurrence_pattern&.titleize %>.
               <% end %>
               <%= @need.recurrence_end_date ? "Until #{format_date(@need.recurrence_end_date)}" : "Ongoing" %>
             </p>
@@ -130,10 +130,25 @@
       <% end %>
 
       <!-- Checklist (optional) -->
-      <% if @checklists.any? %>
+      <% if @checklists_needs.any? || @checklists_events.any? %>
         <div>
           <%= f.label :checklist_id, "Checklist (Optional)", class: "block text-sm font-medium mb-2" %>
-          <%= f.collection_select :checklist_id, @checklists, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+          
+          <!-- Needs Checklist -->
+          <div data-content-type-target="checklistNeed" class="<%= @need.event? ? 'hidden' : '' %>">
+            <%= f.collection_select :checklist_id, @checklists_needs, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+            <% if @checklists_needs.empty? %>
+              <p class="text-sm text-gray-500 mt-1 italic">No checklists available for needs.</p>
+            <% end %>
+          </div>
+          
+          <!-- Events Checklist -->
+          <div data-content-type-target="checklistEvent" class="<%= @need.event? ? '' : 'hidden' %>">
+            <%= f.collection_select :checklist_id, @checklists_events, :id, :name, { include_blank: "No checklist" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+            <% if @checklists_events.empty? %>
+              <p class="text-sm text-gray-500 mt-1 italic">No checklists available for events.</p>
+            <% end %>
+          </div>
         </div>
       <% end %>
 

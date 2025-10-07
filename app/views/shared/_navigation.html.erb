@@ -25,7 +25,7 @@
           <%= link_to "Admin", admin_root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <% end %>
         
-        <%= link_to "Create Need", new_need_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700" %>
+        <%= link_to "+ Create", new_need_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700" %>
         
         <!-- Theme Toggle -->
         <button type="button" data-action="click->theme#toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" title="Toggle theme">
@@ -92,7 +92,7 @@
           <%= link_to "Admin", admin_root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <% end %>
         
-        <%= link_to "Create Need", new_need_path, class: "block px-3 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700 text-center" %>
+        <%= link_to "+ Create", new_need_path, class: "block px-3 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700 text-center" %>
         
         <div class="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 space-y-1">
           <%= link_to "Profile", profile_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(profile_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>

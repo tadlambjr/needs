@@ -31,7 +31,8 @@ class NeedsController < ApplicationController
   def new
     @need = current_church.needs.new(creator: Current.user)
     @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-    @checklists = current_church.checklists.active.order(:name)
+    @checklists_needs = current_church.checklists.active.for_needs.order(:name)
+    @checklists_events = current_church.checklists.active.for_events.order(:name)
     @rooms = current_church.rooms.active.ordered
   end
 
@@ -58,7 +59,8 @@ class NeedsController < ApplicationController
       redirect_to @need, notice: 'Need was successfully created.'
     else
       @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-      @checklists = current_church.checklists.active.order(:name)
+      @checklists_needs = current_church.checklists.active.for_needs.order(:name)
+      @checklists_events = current_church.checklists.active.for_events.order(:name)
       @rooms = current_church.rooms.active.ordered
       render :new, status: :unprocessable_entity
     end
@@ -67,7 +69,8 @@ class NeedsController < ApplicationController
   def edit
     authorize_edit!
     @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-    @checklists = current_church.checklists.active.order(:name)
+    @checklists_needs = current_church.checklists.active.for_needs.order(:name)
+    @checklists_events = current_church.checklists.active.for_events.order(:name)
     @rooms = current_church.rooms.active.ordered
   end
 
@@ -78,7 +81,8 @@ class NeedsController < ApplicationController
       redirect_to @need, notice: 'Need was successfully updated.'
     else
       @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-      @checklists = current_church.checklists.active.order(:name)
+      @checklists_needs = current_church.checklists.active.for_needs.order(:name)
+      @checklists_events = current_church.checklists.active.for_events.order(:name)
       @rooms = current_church.rooms.active.ordered
       render :edit, status: :unprocessable_entity
     end
