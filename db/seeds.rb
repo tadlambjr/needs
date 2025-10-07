@@ -17,8 +17,8 @@ end
 # Create church admins
 puts "Creating church admins..."
 adam = church.users.find_or_create_by!(email_address: 'adam@bateswebdesign.com') do |user|
-  user.password = '1build-things'
-  user.name = 'Adam Bates'
+  user.password = ''
+  user.name = 'Adam'
   user.phone = ''
   user.role = :admin
   user.is_church_admin = true
@@ -27,8 +27,8 @@ adam = church.users.find_or_create_by!(email_address: 'adam@bateswebdesign.com')
 end
 
 tad = church.users.find_or_create_by!(email_address: 'ri@tadlamb.com') do |user|
-  user.password = 'beautiful-word'
-  user.name = 'Tad Lamb'
+  user.password = ''
+  user.name = 'Tad'
   user.phone = ''
   user.role = :admin
   user.is_church_admin = false
@@ -39,9 +39,9 @@ end
 # Create sample members
 puts "Creating sample members..."
 member1 = church.users.find_or_create_by!(email_address: 'rachel@tadlamb.com') do |user|
-  user.password = 'beautiful-word'
-  user.name = 'Rachel Lamb'
-  user.phone = '614-209-8914'
+  user.password = ''
+  user.name = 'Rachel'
+  user.phone = ''
   user.role = :member
   user.email_verified = true
   user.active = true
