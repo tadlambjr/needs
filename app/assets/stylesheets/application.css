@@ -1,1 +1,21 @@
 /* Application styles */
+
+/* Native dialog styling */
+dialog {
+  border: none;
+  padding: 0;
+  max-width: none;
+  max-height: none;
+  background: transparent;
+}
+
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+dialog[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

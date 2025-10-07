@@ -81,8 +81,27 @@ class NeedsController < ApplicationController
   end
 
   def destroy
-    @need.destroy
-    redirect_to needs_url, notice: 'Need was successfully deleted.'
+    need_title = @need.title
+    
+    if @need.destroy
+      respond_to do |format|
+        format.html { 
+          redirect_to root_path, notice: "#{need_title} was successfully deleted.", status: :see_other 
+        }
+        format.turbo_stream { 
+          redirect_to root_path, notice: "#{need_title} was successfully deleted.", status: :see_other 
+        }
+      end
+    else
+      respond_to do |format|
+        format.html { 
+          redirect_to @need, alert: 'Unable to delete this need.', status: :see_other 
+        }
+        format.turbo_stream { 
+          redirect_to @need, alert: 'Unable to delete this need.', status: :see_other 
+        }
+      end
+    end
   end
 
   def signup

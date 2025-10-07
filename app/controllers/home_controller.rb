@@ -2,6 +2,10 @@ class HomeController < ApplicationController
   allow_unauthenticated_access only: [:index]
   
   def index
+    # Prevent Turbo from caching this page
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
     if authenticated?
       @upcoming_signups = Current.user.need_signups.joins(:need)
                                      .where(status: [:signed_up, :waitlist])
