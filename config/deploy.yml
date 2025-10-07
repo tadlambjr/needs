@@ -15,7 +15,7 @@ servers:
 
 proxy:
   ssl: true
-  host: needs.roaringlambproductions.com
+  host: staging.churchneeds.net
   app_port: 80
   forward_headers: true
   healthcheck:

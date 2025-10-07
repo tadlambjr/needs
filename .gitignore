@@ -33,5 +33,8 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore Kamal secrets (contain sensitive credentials)
+/.kamal/secrets-common
+
 /app/assets/builds/*
 !/app/assets/builds/.keep

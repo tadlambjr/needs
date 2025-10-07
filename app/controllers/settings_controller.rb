@@ -9,9 +9,11 @@ class SettingsController < ApplicationController
     
     if params[:notification_preferences].present?
       update_notification_preferences
+      redirect_to settings_path, notice: "Notification preferences updated successfully."
+      return
     end
     
-    if @user.update(settings_params)
+    if params[:user].present? && @user.update(settings_params)
       redirect_to settings_path, notice: "Settings updated successfully."
     else
       render :show, status: :unprocessable_entity
@@ -21,7 +23,7 @@ class SettingsController < ApplicationController
   private
 
   def settings_params
-    params.require(:user).permit(:theme_preference)
+    params.fetch(:user, {}).permit(:theme_preference)
   end
 
   def update_notification_preferences

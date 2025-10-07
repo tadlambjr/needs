@@ -18,10 +18,6 @@
                 <%= check_box_tag "notification_preferences[#{type}][email_enabled]", "1", pref.email_enabled, class: "mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
                 <%= label_tag "notification_preferences_#{type}_email_enabled", "Email", class: "text-sm" %>
               </div>
-              <%# <div class="flex items-center">
-                <%= check_box_tag "notification_preferences[#{type}][sms_enabled]", "1", pref.sms_enabled, class: "mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
-                <%= label_tag "notification_preferences_#{type}_sms_enabled", "SMS", class: "text-sm" %>
-              </div> %>
               <div class="flex items-center">
                 <%= check_box_tag "notification_preferences[#{type}][in_app_enabled]", "1", pref.in_app_enabled, class: "mr-2 h-4 w-4 text-indigo-600 border-gray-300 rounded" %>
                 <%= label_tag "notification_preferences_#{type}_in_app_enabled", "In-App", class: "text-sm" %>
