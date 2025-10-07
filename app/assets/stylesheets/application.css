@@ -4,18 +4,17 @@
 dialog {
   border: none;
   padding: 0;
-  max-width: none;
-  max-height: none;
+  margin: auto;
+  max-width: 90vw;
+  max-height: 90vh;
   background: transparent;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
-}
-
-dialog[open] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

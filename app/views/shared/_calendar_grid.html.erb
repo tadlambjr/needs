@@ -15,14 +15,14 @@
   upcoming_signups ||= []
   show_past_opacity ||= false
   min_height ||= 120
-  max_events_shown ||= 3
+  max_events_shown ||= 999  # Show all events, no limit
   has_gaps = local_assigns[:has_gaps] || false
   day_signups_by_date ||= {}
 %>
 
 <!-- Day cells and events grid -->
 <% 
-  # Pre-calculate max events per week for proper sizing
+  # Pre-calculate max events per week for proper sizing - now shows ALL events
   week_event_counts = weeks.map do |week|
     max_events_in_week = 0
     week.each do |date|
@@ -34,8 +34,8 @@
       # Include individual day signups in the count
       day_signups = day_signups_by_date[date] || []
       total_events = sorted_needs.count + day_signups.count
-      events_count = [total_events, max_events_shown].min
-      max_events_in_week = [max_events_in_week, events_count].max
+      # Show ALL events - no limiting
+      max_events_in_week = [max_events_in_week, total_events].max
     end
     max_events_in_week
   end
@@ -161,7 +161,6 @@
           <% 
             # Calculate event index accounting for needs already rendered
             event_index = events_to_show.count + signup_index
-            next if event_index >= max_events_shown
             
             # Position from top of week row
             top_px = 32 + (event_index * 26)

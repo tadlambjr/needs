@@ -43,11 +43,15 @@ class NeedsController < ApplicationController
       # Create room bookings if any rooms were selected
       if params[:room_ids].present?
         params[:room_ids].reject(&:blank?).each do |room_id|
-          @need.room_bookings.create(
+          booking = @need.room_bookings.create(
             room_id: room_id,
             requested_by: Current.user,
             notes: params[:room_booking_notes]
           )
+          # Auto-approve room bookings for admin-created needs
+          if Current.user.admin?
+            booking.approve!(Current.user)
+          end
         end
       end
       
