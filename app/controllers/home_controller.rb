@@ -14,20 +14,20 @@ class HomeController < ApplicationController
                                      .includes(:need => :category)
                                      .order('needs.start_date')
       
-      @upcoming_needs = Need.member_visible
+      @upcoming_needs = current_church.needs.member_visible
                            .upcoming
                            .where('start_date <= ?', Date.today + 42.days)
                            .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
                            .includes(:category, :creator)
                            .limit(20)
       
-      @categories = Category.active.ordered
+      @categories = current_church.categories.active.ordered
       @unread_notifications_count = Current.user.notifications.unread.count
       
       # Calendar data - 6 weeks starting from today
       @calendar_start = Date.today.beginning_of_week(:sunday)
       @calendar_end = @calendar_start + 6.weeks
-      @calendar_needs = Need.member_visible
+      @calendar_needs = current_church.needs.member_visible
                            .where('start_date <= ? AND end_date >= ?', @calendar_end, @calendar_start)
                            .where(is_recurring: false)  # Exclude parent recurring needs, show only instances
                            .includes(:category, need_signups: :user)
@@ -35,6 +35,7 @@ class HomeController < ApplicationController
       
       # Get individual day signups for meal trains
       @day_signups = NeedSignup.joins(:need)
+                               .where(needs: { church_id: current_church.id })
                                .where('need_signups.specific_date >= ? AND need_signups.specific_date <= ?', @calendar_start, @calendar_end)
                                .where(status: [:signed_up, :waitlist, :completed])
                                .where('needs.allow_individual_day_signup = ?', true)

@@ -3,7 +3,7 @@ class Admin::UsersController < ApplicationController
   before_action :set_user, only: [:edit, :update]
 
   def index
-    @users = User.order(created_at: :desc).page(params[:page]).per(20)
+    @users = current_church.users.order(created_at: :desc).page(params[:page]).per(20)
   end
 
   def edit
@@ -20,7 +20,7 @@ class Admin::UsersController < ApplicationController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = current_church.users.find(params[:id])
   end
 
   def user_params

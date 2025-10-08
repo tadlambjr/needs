@@ -5,19 +5,23 @@ class Admin::ReportsController < ApplicationController
     @date_range = params[:date_range] || '30'
     start_date = @date_range.to_i.days.ago
     
-    @needs_by_category = Need.where('created_at >= ?', start_date)
+    @needs_by_category = current_church.needs.where('created_at >= ?', start_date)
                              .group(:category_id)
                              .count
     
-    @signups_by_user = NeedSignup.where('created_at >= ?', start_date)
+    @signups_by_user = NeedSignup.joins(:need)
+                                 .where(needs: { church_id: current_church.id })
+                                 .where('need_signups.created_at >= ?', start_date)
                                  .group(:user_id)
                                  .count
     
-    @needs_by_status = Need.where('created_at >= ?', start_date)
+    @needs_by_status = current_church.needs.where('created_at >= ?', start_date)
                            .group(:status)
                            .count
     
-    @top_volunteers = User.joins(:need_signups)
+    @top_volunteers = current_church.users.joins(:need_signups)
+                          .joins('INNER JOIN needs ON needs.id = need_signups.need_id')
+                          .where(needs: { church_id: current_church.id })
                           .where('need_signups.created_at >= ?', start_date)
                           .group('users.id', 'users.name')
                           .count

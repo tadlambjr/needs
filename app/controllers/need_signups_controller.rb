@@ -2,7 +2,7 @@ class NeedSignupsController < ApplicationController
   before_action :set_need_signup, only: [:destroy, :checklist, :mark_complete]
 
   def create
-    @need = Need.find(params[:need_signup][:need_id])
+    @need = current_church.needs.find(params[:need_signup][:need_id])
     @need_signup = @need.need_signups.build(need_signup_params)
     @need_signup.user = Current.user
     

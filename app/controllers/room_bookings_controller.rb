@@ -45,7 +45,7 @@ class RoomBookingsController < ApplicationController
   private
   
   def set_room_booking
-    @room_booking = RoomBooking.find(params[:id])
+    @room_booking = RoomBooking.joins(:need).where(needs: { church_id: current_church.id }).find(params[:id])
   end
   
   def authorize_cancel!
