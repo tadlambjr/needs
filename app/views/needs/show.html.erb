@@ -1,6 +1,6 @@
 <div class="max-w-4xl mx-auto">
   <!-- Back Link -->
-  <%= link_to needs_path, class: "inline-flex items-center text-teal-600 hover:text-teal-800 mb-6" do %>
+  <%= link_to needs_path, class: "inline-flex items-center text-sky-600 hover:text-sky-800 mb-6" do %>
     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
     </svg>
@@ -81,7 +81,7 @@
           <div>
             <p class="font-semibold"><%= @need.capacity_label %></p>
             <p class="text-gray-600 dark:text-gray-400">
-              <span class="font-bold text-teal-600"><%= @need.active_signups.count %></span> / <%= @need.volunteer_capacity %>
+              <span class="font-bold text-sky-600"><%= @need.active_signups.count %></span> / <%= @need.volunteer_capacity %>
               <% if @need.full? %>
                 <span class="ml-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">Full</span>
               <% end %>
@@ -137,12 +137,12 @@
         <h2 class="text-xl font-semibold mb-4">Sign Up for Specific Days</h2>
         <div class="grid grid-cols-7 gap-2">
           <% @need.days_array.each do |date| %>
-            <div class="border border-gray-200 dark:border-gray-700 rounded p-3 <%= @need.available_for_date?(date) ? 'hover:border-teal-500 cursor-pointer' : 'bg-gray-100 dark:bg-gray-700' %>">
+            <div class="border border-gray-200 dark:border-gray-700 rounded p-3 <%= @need.available_for_date?(date) ? 'hover:border-sky-500 cursor-pointer' : 'bg-gray-100 dark:bg-gray-700' %>">
               <p class="text-sm font-semibold"><%= date.strftime('%b %d') %></p>
               <p class="text-xs text-gray-600 dark:text-gray-400"><%= date.strftime('%A') %></p>
               <% if @need.available_for_date?(date) %>
                 <% if authenticated? %>
-                  <%= button_to "Sign Up", signup_need_path(@need, specific_date: date), method: :post, class: "mt-2 w-full px-2 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700" %>
+                  <%= button_to "Sign Up", signup_need_path(@need, specific_date: date), method: :post, class: "mt-2 w-full px-2 py-1 bg-sky-600 text-white text-xs rounded hover:bg-sky-700" %>
                 <% end %>
               <% else %>
                 <p class="mt-2 text-xs text-red-600">Filled</p>
@@ -180,7 +180,7 @@
               <div class="flex gap-2">
                 <% if @need.checklist && !@user_signup.completed? %>
                   <%= link_to "View Checklist", checklist_need_signup_path(@user_signup), 
-                      class: "px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700 font-medium" %>
+                      class: "px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700 font-medium" %>
                 <% end %>
                 <% if @user_signup.can_cancel? %>
                   <%= button_to "Cancel", cancel_signup_need_path(@need), method: :delete, 
@@ -193,7 +193,7 @@
         <% elsif @can_signup %>
           <% unless @need.allow_individual_day_signup? %>
             <%= button_to @need.signup_label, signup_need_path(@need), method: :post,
-                class: "w-full md:w-auto px-6 py-3 bg-teal-600 text-white text-lg font-semibold rounded-md hover:bg-teal-700" %>
+                class: "w-full md:w-auto px-6 py-3 bg-sky-600 text-white text-lg font-semibold rounded-md hover:bg-sky-700" %>
           <% end %>
         <% elsif @need.full? %>
           <p class="text-yellow-600 dark:text-yellow-400 font-medium">This need is currently full.</p>
@@ -251,7 +251,7 @@
             <h3 class="font-semibold text-lg mb-3"><%= month.strftime('%B %Y') %></h3>
             <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
               <% instances.each do |instance| %>
-                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 <%= instance.full? ? 'bg-gray-100 dark:bg-gray-800' : 'hover:border-teal-400 dark:hover:border-teal-500' %>">
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 <%= instance.full? ? 'bg-gray-100 dark:bg-gray-800' : 'hover:border-sky-400 dark:hover:border-sky-500' %>">
                   <div class="flex justify-between items-start mb-2">
                     <span class="font-medium"><%= instance.start_date.strftime('%b %d') %></span>
                     <% if instance.full? %>
@@ -279,7 +279,7 @@
                       <span class="text-xs text-green-600 dark:text-green-400 font-medium">✓ You're signed up</span>
                     <% else %>
                       <%= button_to "Sign Up", signup_need_path(instance), method: :post, 
-                          class: "mt-2 w-full px-3 py-2 bg-teal-600 text-white text-sm rounded hover:bg-teal-700" %>
+                          class: "mt-2 w-full px-3 py-2 bg-sky-600 text-white text-sm rounded hover:bg-sky-700" %>
                     <% end %>
                   <% end %>
                 </div>

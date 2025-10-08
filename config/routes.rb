@@ -61,7 +61,11 @@ Rails.application.routes.draw do
   # Admin routes
   namespace :admin do
     root "dashboard#index"
-    resources :users, only: [:index, :edit, :update]
+    resources :users, only: [:index, :edit, :update] do
+      member do
+        post :transfer_ownership
+      end
+    end
     resources :reports, only: [:index]
     resources :rooms
   end

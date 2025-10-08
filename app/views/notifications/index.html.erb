@@ -4,7 +4,7 @@
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-3xl font-bold">Notifications</h1>
     <% if @unread_count > 0 %>
-      <%= button_to "Mark All as Read", mark_all_as_read_notifications_path, method: :patch, class: "px-4 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700" %>
+      <%= button_to "Mark All as Read", mark_all_as_read_notifications_path, method: :patch, class: "px-4 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700" %>
     <% end %>
   </div>
 
@@ -19,7 +19,7 @@
   <% if @notifications.any? %>
     <div class="space-y-4">
       <% @notifications.each do |notification| %>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 <%= 'border-l-4 border-teal-500' unless notification.read? %>">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 <%= 'border-l-4 border-sky-500' unless notification.read? %>">
           <div class="flex items-start justify-between">
             <div class="flex-1">
               <h3 class="font-semibold <%= 'text-gray-900 dark:text-gray-100' unless notification.read? %> <%= 'text-gray-600 dark:text-gray-400' if notification.read? %>">
@@ -33,7 +33,7 @@
               </p>
             </div>
             <% unless notification.read? %>
-              <%= button_to "Mark as Read", mark_as_read_notification_path(notification), method: :patch, class: "ml-4 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
+              <%= button_to "Mark as Read", mark_as_read_notification_path(notification), method: :patch, class: "ml-4 text-sm text-sky-600 dark:text-sky-400 hover:text-sky-800" %>
             <% end %>
           </div>
         </div>

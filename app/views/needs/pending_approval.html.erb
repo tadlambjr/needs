@@ -24,7 +24,7 @@
                   </span>
                 </div>
                 <h3 class="text-xl font-semibold mb-2">
-                  <%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %>
+                  <%= link_to need.title, need_path(need), class: "hover:text-sky-600 dark:hover:text-sky-400" %>
                 </h3>
                 <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                   <%= need.event? ? "Event" : "Need" %> by <strong><%= need.creator.name %></strong>
@@ -92,7 +92,7 @@
                 </span>
               </div>
               <h3 class="text-xl font-semibold mb-2">
-                <%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %>
+                <%= link_to need.title, need_path(need), class: "hover:text-sky-600 dark:hover:text-sky-400" %>
               </h3>
               <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
                 Submitted by <strong><%= need.creator.name %></strong> on <%= need.created_at.strftime("%B %d, %Y") %>

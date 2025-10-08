@@ -2,7 +2,7 @@
   <div class="flex items-start justify-between mb-3">
     <div class="flex-1">
       <h3 class="text-xl font-semibold mb-2">
-        <%= link_to need.title, need_path(need), class: "hover:text-teal-600 dark:hover:text-teal-400" %>
+        <%= link_to need.title, need_path(need), class: "hover:text-sky-600 dark:hover:text-sky-400" %>
       </h3>
     </div>
   </div>
@@ -52,7 +52,7 @@
       <span class="text-gray-600 dark:text-gray-400">/ <%= need.volunteer_capacity %> volunteers</span>
     </div>
 
-    <%= link_to "View Details", need_path(need), class: "px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-md hover:bg-teal-700" %>
+    <%= link_to "View Details", need_path(need), class: "px-4 py-2 bg-sky-600 text-white text-sm font-medium rounded-md hover:bg-sky-700" %>
   </div>
 
   <% if need.allow_individual_day_signup? %>

@@ -3,29 +3,29 @@
     <div class="flex items-center justify-between h-16">
       <!-- Logo/Brand -->
       <div class="flex items-center">
-        <%= link_to root_path, class: "text-xl font-bold text-teal-600 dark:text-teal-400" do %>
+        <%= link_to root_path, class: "text-xl font-bold text-sky-600 dark:text-sky-400" do %>
           Church Needs
         <% end %>
       </div>
 
       <!-- Desktop Navigation -->
       <div class="hidden md:flex items-center space-x-2 lg:space-x-4 flex-wrap gap-y-2">
-        <%= link_to "Home", root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "All Needs", needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "Calendar", calendar_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(calendar_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "My Signups", my_needs_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(my_needs_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "Home", root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "All Needs", needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "Calendar", calendar_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(calendar_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "My Signups", my_needs_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(my_needs_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         
         <% if Current.user.admin? %>
-          <%= link_to pending_approval_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(pending_approval_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'} relative" do %>
+          <%= link_to pending_approval_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(pending_approval_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'} relative" do %>
             Approvals
             <% if pending_approvals_count > 0 %>
               <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full"><%= pending_approvals_count %></span>
             <% end %>
           <% end %>
-          <%= link_to "Admin", admin_root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <%= link_to "Admin", admin_root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <% end %>
         
-        <%= link_to "+ Create", new_need_path, class: "px-4 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700" %>
+        <%= link_to "+ Create", new_need_path, class: "px-4 py-2 bg-sky-600 text-white rounded-md text-sm font-medium hover:bg-sky-700" %>
         
         <!-- Theme Toggle -->
         <button type="button" data-action="click->theme#toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700" title="Toggle theme">
@@ -49,9 +49,9 @@
           </button>
           
           <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50">
-            <%= link_to "Profile", profile_path, class: "block px-4 py-2 text-sm #{current_page?(profile_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-            <%= link_to "Settings", settings_path, class: "block px-4 py-2 text-sm #{current_page?(settings_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-            <%= link_to "Notifications", notifications_path, class: "block px-4 py-2 text-sm #{current_page?(notifications_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Profile", profile_path, class: "block px-4 py-2 text-sm #{current_page?(profile_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Settings", settings_path, class: "block px-4 py-2 text-sm #{current_page?(settings_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <%= link_to "Notifications", notifications_path, class: "block px-4 py-2 text-sm #{current_page?(notifications_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
             <% if Current.user.admin? %>
               <hr class="my-1 border-gray-200 dark:border-gray-700">
               <%= link_to "Manage Rooms", admin_rooms_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
@@ -75,13 +75,13 @@
     <!-- Mobile menu -->
     <div data-mobile-menu-target="menu" class="hidden md:hidden pb-4 border-t border-gray-200 dark:border-gray-700 mt-2">
       <div class="flex flex-col space-y-1 pt-2">
-        <%= link_to "Home", root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "All Needs", needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "Calendar", calendar_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(calendar_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-        <%= link_to "My Signups", my_needs_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(my_needs_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "Home", root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "All Needs", needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "Calendar", calendar_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(calendar_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+        <%= link_to "My Signups", my_needs_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(my_needs_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         
         <% if Current.user.admin? %>
-          <%= link_to pending_approval_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(pending_approval_needs_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'} relative" do %>
+          <%= link_to pending_approval_needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(pending_approval_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'} relative" do %>
             <span class="inline-flex items-center gap-2">
               Approvals
               <% if pending_approvals_count > 0 %>
@@ -89,15 +89,15 @@
               <% end %>
             </span>
           <% end %>
-          <%= link_to "Admin", admin_root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <%= link_to "Admin", admin_root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(admin_root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <% end %>
         
-        <%= link_to "+ Create", new_need_path, class: "block px-3 py-2 bg-teal-600 text-white rounded-md text-sm font-medium hover:bg-teal-700 text-center" %>
+        <%= link_to "+ Create", new_need_path, class: "block px-3 py-2 bg-sky-600 text-white rounded-md text-sm font-medium hover:bg-sky-700 text-center" %>
         
         <div class="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 space-y-1">
-          <%= link_to "Profile", profile_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(profile_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-          <%= link_to "Settings", settings_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(settings_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
-          <%= link_to "Notifications", notifications_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(notifications_path) ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <%= link_to "Profile", profile_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(profile_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <%= link_to "Settings", settings_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(settings_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <%= link_to "Notifications", notifications_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(notifications_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
           <%= button_to "Sign Out", session_path, method: :delete, class: "w-full text-left px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         </div>
       </div>

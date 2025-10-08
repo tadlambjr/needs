@@ -15,11 +15,11 @@
             <h3 class="font-medium mb-3"><%= type.to_s.titleize %></h3>
             <div class="grid grid-cols-2 gap-4 ml-4">
               <div class="flex items-center">
-                <%= check_box_tag "notification_preferences[#{type}][email_enabled]", "1", pref.email_enabled, class: "mr-2 h-4 w-4 text-teal-600 border-gray-300 rounded" %>
+                <%= check_box_tag "notification_preferences[#{type}][email_enabled]", "1", pref.email_enabled, class: "mr-2 h-4 w-4 text-sky-600 border-gray-300 rounded" %>
                 <%= label_tag "notification_preferences_#{type}_email_enabled", "Email", class: "text-sm" %>
               </div>
               <div class="flex items-center">
-                <%= check_box_tag "notification_preferences[#{type}][in_app_enabled]", "1", pref.in_app_enabled, class: "mr-2 h-4 w-4 text-teal-600 border-gray-300 rounded" %>
+                <%= check_box_tag "notification_preferences[#{type}][in_app_enabled]", "1", pref.in_app_enabled, class: "mr-2 h-4 w-4 text-sky-600 border-gray-300 rounded" %>
                 <%= label_tag "notification_preferences_#{type}_in_app_enabled", "In-App", class: "text-sm" %>
               </div>
             </div>
@@ -28,7 +28,7 @@
       </div>
 
       <div class="mt-6">
-        <%= f.submit "Save Preferences", class: "px-6 py-2 bg-teal-600 text-white rounded-md hover:bg-teal-700" %>
+        <%= f.submit "Save Preferences", class: "px-6 py-2 bg-sky-600 text-white rounded-md hover:bg-sky-700" %>
       </div>
     <% end %>
   </div>
@@ -44,7 +44,7 @@
       
       <div>
         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Password</p>
-        <%= link_to "Change Password", new_password_path, class: "mt-1 text-teal-600 dark:text-teal-400 hover:text-teal-800" %>
+        <%= link_to "Change Password", new_password_path, class: "mt-1 text-sky-600 dark:text-sky-400 hover:text-sky-800" %>
       </div>
     </div>
   </div>

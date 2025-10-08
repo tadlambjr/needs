@@ -113,12 +113,12 @@ export default class extends Controller {
     if (this.hasMarkAllButtonTarget) {
       if (allChecked) {
         this.markAllButtonTarget.textContent = "Unmark All"
-        this.markAllButtonTarget.classList.remove("bg-teal-100", "dark:bg-teal-900", "text-teal-700", "dark:text-teal-300", "border-teal-300", "dark:border-teal-700")
+        this.markAllButtonTarget.classList.remove("bg-sky-100", "dark:bg-sky-900", "text-sky-700", "dark:text-sky-300", "border-sky-300", "dark:border-sky-700")
         this.markAllButtonTarget.classList.add("bg-red-100", "dark:bg-red-900", "text-red-700", "dark:text-red-300", "border-red-300", "dark:border-red-700")
       } else {
         this.markAllButtonTarget.textContent = "Mark All as Completed"
         this.markAllButtonTarget.classList.remove("bg-red-100", "dark:bg-red-900", "text-red-700", "dark:text-red-300", "border-red-300", "dark:border-red-700")
-        this.markAllButtonTarget.classList.add("bg-teal-100", "dark:bg-teal-900", "text-teal-700", "dark:text-teal-300", "border-teal-300", "dark:border-teal-700")
+        this.markAllButtonTarget.classList.add("bg-sky-100", "dark:bg-sky-900", "text-sky-700", "dark:text-sky-300", "border-sky-300", "dark:border-sky-700")
       }
     }
 

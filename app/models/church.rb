@@ -22,4 +22,12 @@ class Church < ApplicationRecord
   def members
     users.where(is_church_admin: false)
   end
+  
+  def owner
+    users.find_by(is_owner: true)
+  end
+  
+  def has_owner?
+    owner.present?
+  end
 end

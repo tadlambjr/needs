@@ -10,7 +10,7 @@
       <h2 class="text-2xl font-semibold mb-4">My Upcoming Commitments</h2>
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <% @upcoming_signups.each do |signup| %>
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 <%= signup.completed? ? 'border-blue-500' : 'border-teal-500' %>">
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 border-l-4 <%= signup.completed? ? 'border-blue-500' : 'border-sky-500' %>">
             <div class="flex items-start justify-between mb-2">
               <h3 class="font-semibold text-lg"><%= signup.need.title %></h3>
               <% if signup.completed? %>
@@ -33,7 +33,7 @@
               <strong>Time:</strong> <%= time_slot_label(signup.need.time_slot, signup.need.specific_time) %>
             </p>
             <div class="flex gap-2">
-              <%= link_to "View Details", need_path(signup.need), class: "text-teal-600 hover:text-teal-800 text-sm font-medium" %>
+              <%= link_to "View Details", need_path(signup.need), class: "text-sky-600 hover:text-sky-800 text-sm font-medium" %>
               <% if signup.need.checklist && !signup.completed? %>
                 <span class="text-gray-400">•</span>
                 <%= link_to "Checklist", checklist_need_signup_path(signup), class: "text-green-600 hover:text-green-800 text-sm font-medium" %>
@@ -49,7 +49,7 @@
   <div class="grid gap-4 md:grid-cols-3 mb-8">
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h3 class="text-lg font-semibold mb-2">Available Needs</h3>
-      <p class="text-3xl font-bold text-teal-600"><%= @upcoming_needs.count %></p>
+      <p class="text-3xl font-bold text-sky-600"><%= @upcoming_needs.count %></p>
     </div>
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h3 class="text-lg font-semibold mb-2">My Active Signups</h3>
@@ -66,7 +66,7 @@
 
   <!-- Filter by Category -->
   <div class="mb-6 flex flex-wrap gap-2">
-    <%= link_to "All", needs_path, class: "px-4 py-2 rounded-full bg-teal-100 dark:bg-teal-900 text-teal-800 dark:text-teal-200 text-sm font-medium hover:bg-teal-200 dark:hover:bg-teal-800" %>
+    <%= link_to "All", needs_path, class: "px-4 py-2 rounded-full bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 text-sm font-medium hover:bg-sky-200 dark:hover:bg-sky-800" %>
     <% @categories.each do |category| %>
       <%= link_to category.name, needs_path(category_id: category.id), class: "px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-600" %>
     <% end %>
@@ -76,7 +76,7 @@
   <div>
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-semibold">Upcoming Needs</h2>
-      <%= link_to "View All", needs_path, class: "text-teal-600 hover:text-teal-800 font-medium" %>
+      <%= link_to "View All", needs_path, class: "text-sky-600 hover:text-sky-800 font-medium" %>
     </div>
 
     <% if @upcoming_needs.any? %>
@@ -96,23 +96,23 @@
   <% content_for :container_class, '' %>
 
   <!-- Unauthenticated Landing Page -->
-  <div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-teal-900 dark:via-purple-900 dark:to-pink-900">
+  <div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200 dark:from-sky-900 dark:via-purple-900 dark:to-pink-900">
     <!-- Hero Section -->
     <div class="container mx-auto px-4 py-20">
       <div class="max-w-4xl mx-auto text-center text-white">
         <h1 class="text-5xl md:text-6xl font-bold mb-6 drop-shadow-lg">Church Needs</h1>
-        <p class="text-xl md:text-2xl mb-8 text-gray-900 dark:text-teal-100 drop-shadow">
+        <p class="text-xl md:text-2xl mb-8 text-gray-900 dark:text-sky-100 drop-shadow">
           An open-source platform to help churches coordinate volunteer opportunities and serve their communities
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <%= link_to new_registration_path, class: "px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg w-full sm:w-auto" do %>
             Create Your Church Account
           <% end %>
-          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-teal-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-teal-900 transition border-2 border-gray-800 dark:border-white/20 w-full sm:w-auto" do %>
+          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-sky-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-sky-900 transition border-2 border-gray-800 dark:border-white/20 w-full sm:w-auto" do %>
             Sign In
           <% end %>
         </div>
-        <p class="mt-6 text-gray-800 dark:text-teal-200 text-sm drop-shadow">
+        <p class="mt-6 text-gray-800 dark:text-sky-200 text-sm drop-shadow">
           MIT Licensed · Open Source · Self-Hostable
         </p>
       </div>
@@ -131,8 +131,8 @@
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           <!-- Feature 1 -->
           <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg p-8 hover:shadow-xl hover:bg-white dark:hover:bg-gray-800 transition">
-            <div class="w-12 h-12 bg-teal-100 dark:bg-teal-900 rounded-lg flex items-center justify-center mb-4">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-12 h-12 bg-sky-100 dark:bg-sky-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
               </svg>
             </div>
@@ -255,43 +255,43 @@
           <h3 class="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Built for Churches, By Design</h3>
           <div class="grid md:grid-cols-2 gap-6 text-gray-800 dark:text-gray-200">
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Role-based access:</strong> Admin and member roles with appropriate permissions</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Calendar view:</strong> 6-week overview of all upcoming needs and commitments</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Dark mode:</strong> Light and dark themes for comfortable viewing anytime</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Mobile-friendly:</strong> Responsive design works beautifully on any device</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Event RSVPs:</strong> Track attendance for church gatherings and activities</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Room reservations:</strong> Coordinate facility usage with approval workflow</span>
             </div>
             <div class="flex items-start gap-3">
-              <svg class="w-6 h-6 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-6 h-6 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
               </svg>
               <span><strong>Simple and intuitive:</strong> Easy to use for all ages and tech levels</span>
@@ -314,10 +314,10 @@
 
           <div class="grid md:grid-cols-2 gap-8">
             <!-- Option 1: Create Account -->
-            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-8 border-2 border-teal-500/30 dark:border-teal-400/30 hover:bg-white dark:hover:bg-gray-800 transition">
+            <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-8 border-2 border-sky-500/30 dark:border-sky-400/30 hover:bg-white dark:hover:bg-gray-800 transition">
               <div class="text-center mb-6">
-                <div class="inline-flex items-center justify-center w-16 h-16 bg-teal-100 dark:bg-teal-900 rounded-full mb-4">
-                  <svg class="w-8 h-8 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="inline-flex items-center justify-center w-16 h-16 bg-sky-100 dark:bg-sky-900 rounded-full mb-4">
+                  <svg class="w-8 h-8 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                   </svg>
                 </div>
@@ -352,7 +352,7 @@
                 </li>
               </ul>
 
-              <%= link_to new_registration_path, class: "block w-full px-6 py-4 bg-teal-600 text-white text-center rounded-lg font-semibold text-lg hover:bg-teal-700 transition shadow-lg" do %>
+              <%= link_to new_registration_path, class: "block w-full px-6 py-4 bg-sky-600 text-white text-center rounded-lg font-semibold text-lg hover:bg-sky-700 transition shadow-lg" do %>
                 Create Your Church Account
               <% end %>
             </div>
@@ -418,7 +418,7 @@
               Your support helps maintain the hosted service, fund new features, and keep this tool free for churches everywhere.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#" class="px-8 py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition shadow-lg">
+              <a href="#" class="px-8 py-3 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition shadow-lg">
                 Make a Donation
               </a>
               <a href="https://github.com/tadlambjr/needs" target="_blank" rel="noopener" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
@@ -434,14 +434,14 @@
     <div class="py-16 pb-24">
       <div class="container mx-auto px-4 text-center">
         <h2 class="text-3xl font-bold text-white drop-shadow-lg mb-4">Ready to Get Started?</h2>
-        <p class="text-xl text-gray-900 dark:text-teal-100 drop-shadow mb-8">
+        <p class="text-xl text-gray-900 dark:text-sky-100 drop-shadow mb-8">
           Join churches using Church Needs to better serve their communities
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <%= link_to new_registration_path, class: "px-8 py-4 bg-white text-gray-900 rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg" do %>
             Create Account
           <% end %>
-          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-teal-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-teal-900 transition border-2 border-gray-800 dark:border-white/20" do %>
+          <%= link_to new_session_path, class: "px-8 py-4 bg-gray-900/80 dark:bg-sky-900/80 backdrop-blur-sm text-white rounded-lg font-semibold text-lg hover:bg-gray-900 dark:hover:bg-sky-900 transition border-2 border-gray-800 dark:border-white/20" do %>
             Sign In
           <% end %>
         </div>

@@ -15,6 +15,7 @@ class RegistrationsController < ApplicationController
       @user = @church.users.build(user_params)
       @user.is_church_admin = true
       @user.role = :admin
+      @user.is_owner = true
       
       if @church.save
         start_new_session_for @user

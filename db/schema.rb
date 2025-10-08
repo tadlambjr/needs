@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_07_154414) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_08_111248) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -222,7 +222,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_154414) do
     t.integer "theme_preference", default: 0, null: false
     t.integer "church_id", null: false
     t.boolean "is_church_admin", default: false, null: false
+    t.boolean "is_owner", default: false, null: false
     t.index ["church_id", "is_church_admin"], name: "index_users_on_church_id_and_is_church_admin"
+    t.index ["church_id", "is_owner"], name: "index_users_on_church_id_and_is_owner", where: "is_owner = 1"
     t.index ["church_id"], name: "index_users_on_church_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
