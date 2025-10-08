@@ -133,7 +133,7 @@
           </div>
 
           <!-- New Church Fields (Hidden by default) -->
-          <div id="new_church_fields" class="space-y-4 pl-7 hidden">
+          <div id="new_church_fields" class="space-y-4 pl-7 <%= params[:user]&.dig(:church_option) == 'new' ? '' : 'hidden' %>">
             <div>
               <%= form.label :church_name, "Church Name", class: "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" %>
               <%= form.text_field :church_name,
@@ -224,7 +224,7 @@
 
     <!-- Footer -->
     <p class="mt-8 text-center text-sm text-white/80">
-      © <%= Time.current.year %> Church Needs App. Built with ❤️ for our community.
+      &copy; <%= Time.current.year %> Roaring Lamb Productions LLC
     </p>
   </div>
   </div>
@@ -239,19 +239,22 @@
 
     function toggleFields() {
       if (newRadio && newRadio.checked) {
-        existingFields.classList.add('hidden');
-        newFields.classList.remove('hidden');
+        if (existingFields) existingFields.classList.add('hidden');
+        if (newFields) newFields.classList.remove('hidden');
       } else {
-        existingFields.classList.remove('hidden');
-        newFields.classList.add('hidden');
+        if (existingFields) existingFields.classList.remove('hidden');
+        if (newFields) newFields.classList.add('hidden');
       }
     }
 
-    // Initialize on page load
+    // Initialize on page load - check which radio is actually selected
     toggleFields();
 
     // Add event listeners
     if (existingRadio) existingRadio.addEventListener('change', toggleFields);
     if (newRadio) newRadio.addEventListener('change', toggleFields);
+    
+    // Force check on page load to handle form resubmissions
+    setTimeout(toggleFields, 0);
   });
 </script>
