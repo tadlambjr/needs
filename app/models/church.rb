@@ -5,6 +5,7 @@ class Church < ApplicationRecord
   has_many :needs, dependent: :destroy
   has_many :checklists, dependent: :destroy
   has_many :rooms, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
   
   # Validations
   validates :name, presence: true, length: { minimum: 2, maximum: 200 }
@@ -29,5 +30,13 @@ class Church < ApplicationRecord
   
   def has_owner?
     owner.present?
+  end
+  
+  def active_subscription
+    subscriptions.active_subscriptions.order(created_at: :desc).first
+  end
+  
+  def has_active_subscription?
+    active_subscription.present?
   end
 end

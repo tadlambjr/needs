@@ -418,9 +418,9 @@
               Your support helps maintain the hosted service, fund new features, and keep this tool free for churches everywhere.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#" class="px-8 py-3 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition shadow-lg">
+              <%= link_to new_donation_path, class: "px-8 py-3 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition shadow-lg" do %>
                 Make a Donation
-              </a>
+              <% end %>
               <a href="https://github.com/tadlambjr/needs" target="_blank" rel="noopener" class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
                 Star on GitHub
               </a>

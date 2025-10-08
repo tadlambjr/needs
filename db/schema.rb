@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_08_111248) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_08_113316) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -207,6 +207,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_111248) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer "church_id", null: false
+    t.string "stripe_subscription_id"
+    t.string "stripe_customer_id"
+    t.integer "status", default: 0, null: false
+    t.integer "amount_cents", default: 2500, null: false
+    t.string "currency", default: "usd", null: false
+    t.string "interval", default: "year", null: false
+    t.datetime "current_period_start"
+    t.datetime "current_period_end"
+    t.boolean "cancel_at_period_end", default: false, null: false
+    t.datetime "canceled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["church_id"], name: "index_subscriptions_on_church_id"
+    t.index ["status"], name: "index_subscriptions_on_status"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -252,5 +271,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_111248) do
   add_foreign_key "room_bookings", "users", column: "requested_by_id"
   add_foreign_key "rooms", "churches"
   add_foreign_key "sessions", "users"
+  add_foreign_key "subscriptions", "churches"
   add_foreign_key "users", "churches"
 end

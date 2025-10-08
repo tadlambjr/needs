@@ -52,6 +52,10 @@
             <%= link_to "Profile", profile_path, class: "block px-4 py-2 text-sm #{current_page?(profile_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
             <%= link_to "Settings", settings_path, class: "block px-4 py-2 text-sm #{current_page?(settings_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
             <%= link_to "Notifications", notifications_path, class: "block px-4 py-2 text-sm #{current_page?(notifications_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+            <% if Current.user.owner? %>
+              <hr class="my-1 border-gray-200 dark:border-gray-700">
+              <%= link_to "Manage Donation", manage_donations_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
+            <% end %>
             <% if Current.user.admin? %>
               <hr class="my-1 border-gray-200 dark:border-gray-700">
               <%= link_to "Manage Rooms", admin_rooms_path, class: "block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700" %>
@@ -98,6 +102,9 @@
           <%= link_to "Profile", profile_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(profile_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
           <%= link_to "Settings", settings_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(settings_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
           <%= link_to "Notifications", notifications_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(notifications_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
+          <% if Current.user.owner? %>
+            <%= link_to "Manage Donation", manage_donations_path, class: "block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
+          <% end %>
           <%= button_to "Sign Out", session_path, method: :delete, class: "w-full text-left px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700" %>
         </div>
       </div>

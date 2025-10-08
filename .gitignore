@@ -35,6 +35,7 @@
 
 # Ignore Kamal secrets (contain sensitive credentials)
 /.kamal/secrets-common
+/.kamal/secrets.production
 
 /app/assets/builds/*
 !/app/assets/builds/.keep

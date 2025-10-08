@@ -78,6 +78,20 @@ Rails.application.routes.draw do
     end
   end
   
+  # Donation routes
+  resources :donations, only: [:new, :create] do
+    collection do
+      get :success
+      get :manage
+      patch :update_amount
+      post :cancel
+      post :reactivate
+    end
+  end
+  
+  # Stripe webhook
+  post '/webhooks/stripe', to: 'donations#webhook'
+  
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 end
