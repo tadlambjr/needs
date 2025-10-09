@@ -28,6 +28,9 @@ class DonationsController < ApplicationController
       # Create or retrieve Stripe customer
       customer = get_or_create_stripe_customer
       
+      # Generate restore token for session recovery after Stripe checkout
+      restore_token = Current.session.generate_restore_token!
+      
       # Create a checkout session
       session = Stripe::Checkout::Session.create(
         customer: customer.id,
@@ -47,7 +50,7 @@ class DonationsController < ApplicationController
           quantity: 1,
         }],
         mode: 'subscription',
-        success_url: success_donations_url,
+        success_url: success_donations_url(restore_token: restore_token),
         cancel_url: new_donation_url,
         metadata: {
           church_id: current_church.id,

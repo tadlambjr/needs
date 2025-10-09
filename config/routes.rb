@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Contact form
+  resource :contact, only: [:new, :create], controller: 'contact'
+  
   get "needs/index"
   get "needs/show"
   get "needs/new"

@@ -17,18 +17,18 @@
     <div class="header">
       <h1>Thank You for Your Support! 🎉</h1>
     </div>
-    
+
     <div class="content">
       <p>Hi <%= @owner.name %>,</p>
-      
+
       <p>Your donation to ChurchNeeds.net has been successfully set up!</p>
-      
+
       <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
         <p style="margin: 0; color: #6b7280;">Your Donation Amount</p>
         <p class="amount" style="margin: 10px 0;">$<%= @subscription.amount_in_dollars %></p>
         <p style="margin: 0; color: #6b7280;">Billed yearly</p>
       </div>
-      
+
       <p>Your support helps us:</p>
       <ul>
         <li>Keep ChurchNeeds.net free for all churches</li>
@@ -36,21 +36,21 @@
         <li>Develop new features and improvements</li>
         <li>Provide reliable service to the church community</li>
       </ul>
-      
+
       <p>You can manage your subscription, update the amount, or cancel at any time from your account settings.</p>
-      
+
       <div style="text-align: center;">
         <a href="<%= manage_donations_url %>" class="button">Manage Subscription</a>
       </div>
-      
+
       <p>Thank you for being part of our mission to serve churches!</p>
-      
+
       <p>Blessings,<br>The ChurchNeeds.net Team</p>
     </div>
-    
+
     <div class="footer">
       <p>Roaring Lamb Productions<br>
-      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+      Questions? <a href="<%= new_contact_url %>">Contact our support team</a></p>
     </div>
   </div>
 </body>

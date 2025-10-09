@@ -19,12 +19,12 @@
     <div class="header">
       <h1>Payment Received ✓</h1>
     </div>
-    
+
     <div class="content">
       <p>Hi <%= @owner.name %>,</p>
-      
+
       <p>Thank you! We've successfully received your payment for ChurchNeeds.net.</p>
-      
+
       <div class="receipt">
         <h3 style="margin-top: 0;">Payment Receipt</h3>
         <div class="receipt-row">
@@ -46,19 +46,19 @@
         </div>
         <% end %>
       </div>
-      
+
       <p>Your continued support helps us maintain and improve ChurchNeeds.net for churches everywhere. We're grateful for your partnership!</p>
-      
+
       <div style="text-align: center;">
         <a href="<%= manage_donations_url %>" class="button">View Subscription Details</a>
       </div>
-      
+
       <p>Blessings,<br>The ChurchNeeds.net Team</p>
     </div>
-    
+
     <div class="footer">
       <p>Roaring Lamb Productions<br>
-      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+      Questions? <a href="<%= new_contact_url %>">Contact our support team</a></p>
     </div>
   </div>
 </body>

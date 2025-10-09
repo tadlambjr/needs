@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_08_113316) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_09_020045) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -204,6 +204,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_08_113316) do
     t.string "user_agent"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "restore_token"
+    t.index ["restore_token"], name: "index_sessions_on_restore_token", unique: true
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 

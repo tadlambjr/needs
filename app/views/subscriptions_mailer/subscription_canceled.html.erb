@@ -17,35 +17,35 @@
     <div class="header">
       <h1>Subscription Canceled</h1>
     </div>
-    
+
     <div class="content">
       <p>Hi <%= @owner.name %>,</p>
-      
+
       <p>Your ChurchNeeds.net subscription has been canceled as requested.</p>
-      
+
       <div class="info-box">
         <p style="margin: 0;"><strong>Your subscription will remain active until:</strong></p>
         <p style="font-size: 20px; color: #0ea5e9; margin: 10px 0;"><%= @end_date.strftime("%B %d, %Y") %></p>
         <p style="margin: 0; color: #6b7280;">You'll continue to have full access until this date.</p>
       </div>
-      
+
       <p>We're sorry to see you go! If there's anything we could have done better, we'd love to hear from you.</p>
-      
+
       <p><strong>Changed your mind?</strong></p>
       <p>You can reactivate your subscription at any time before <%= @end_date.strftime("%B %d, %Y") %>.</p>
-      
+
       <div style="text-align: center;">
         <a href="<%= manage_donations_url %>" class="button">Reactivate Subscription</a>
       </div>
-      
+
       <p>Thank you for supporting ChurchNeeds.net. We hope to serve you again in the future!</p>
-      
+
       <p>Blessings,<br>The ChurchNeeds.net Team</p>
     </div>
-    
+
     <div class="footer">
       <p>Roaring Lamb Productions<br>
-      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+      Questions? <a href="<%= new_contact_url %>">Contact our support team</a></p>
     </div>
   </div>
 </body>

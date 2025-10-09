@@ -31,7 +31,7 @@
         <p class="text-2xl font-bold text-gray-900 dark:text-white"><%= @subscription.display_amount %></p>
         <p class="text-sm text-gray-600 dark:text-gray-400">per <%= @subscription.interval %></p>
       </div>
-      
+
       <div>
         <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Next Payment Date</h3>
         <p class="text-2xl font-bold text-sky-600 dark:text-sky-400">
@@ -53,7 +53,7 @@
           <div>
             <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Subscription Scheduled for Cancellation</h4>
             <p class="text-sm text-gray-600 dark:text-gray-400">
-              Your subscription will end on <%= @subscription.next_billing_date&.strftime("%B %d, %Y") %>. 
+              Your subscription will end on <%= @subscription.next_billing_date&.strftime("%B %d, %Y") %>.
               You can reactivate it at any time before then.
             </p>
           </div>
@@ -69,28 +69,28 @@
       <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mb-6">
         <h3 class="text-lg font-semibold mb-2">Update Donation Amount</h3>
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          You can adjust your donation amount at any time. The new amount will take effect on your next billing date 
-          (<strong><%= @subscription.next_billing_date&.strftime("%B %d, %Y") %></strong>). 
+          You can adjust your donation amount at any time. The new amount will take effect on your next billing date
+          (<strong><%= @subscription.next_billing_date&.strftime("%B %d, %Y") %></strong>).
           No payment will be processed immediately.
         </p>
         <%= form_with url: update_amount_donations_path, method: :patch, class: "space-y-4" do |f| %>
-          <div class="flex gap-4">
+          <div class="flex gap-4 items-end">
             <div class="flex-1">
               <label for="amount" class="block text-sm font-medium mb-2">New Amount</label>
               <div class="relative">
                 <span class="absolute left-4 top-3 text-gray-500">$</span>
-                <input type="number" 
-                       name="amount" 
-                       id="amount" 
-                       value="<%= @subscription.amount_in_dollars %>" 
-                       min="1" 
+                <input type="number"
+                       name="amount"
+                       id="amount"
+                       value="<%= @subscription.amount_in_dollars %>"
+                       min="1"
                        step="0.01"
                        class="pl-8 w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent"
                        required>
               </div>
             </div>
-            <div class="flex items-end">
-              <button type="submit" class="px-6 py-2 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition">
+            <div>
+              <button type="submit" class="h-10 px-6 bg-sky-600 text-white rounded-lg font-semibold hover:bg-sky-700 transition whitespace-nowrap flex items-center justify-center">
                 Update Amount
               </button>
             </div>
@@ -114,7 +114,7 @@
         <p class="text-gray-600 dark:text-gray-400 mb-4">
           You can cancel your subscription at any time. You'll continue to have access until the end of your current billing period.
         </p>
-        <%= button_to "Cancel Subscription", cancel_donations_path, method: :post, 
+        <%= button_to "Cancel Subscription", cancel_donations_path, method: :post,
             data: { confirm: "Are you sure you want to cancel your subscription? You can reactivate it anytime before the end of your billing period." },
             class: "px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition" %>
       </div>
@@ -127,11 +127,11 @@
     <p class="text-gray-600 dark:text-gray-400 mb-4">
       If you have any questions about your subscription or billing, please contact us.
     </p>
-    <a href="mailto:support@roaringlambproductions.com" class="inline-flex items-center gap-2 text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium">
+    <%= link_to new_contact_path, class: "inline-flex items-center gap-2 text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium" do %>
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
       </svg>
-      support@roaringlambproductions.com
-    </a>
+      Contact Support
+    <% end %>
   </div>
 </div>

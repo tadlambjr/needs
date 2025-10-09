@@ -17,15 +17,15 @@
     <div class="header">
       <h1>Payment Failed - Action Required</h1>
     </div>
-    
+
     <div class="content">
       <p>Hi <%= @owner.name %>,</p>
-      
+
       <div class="alert">
         <strong>⚠️ Your payment could not be processed</strong>
         <p style="margin: 10px 0 0 0;">We were unable to process your payment of $<%= sprintf("%.2f", @amount) %> for your ChurchNeeds.net subscription.</p>
       </div>
-      
+
       <p><strong>Common reasons for payment failure:</strong></p>
       <ul>
         <li>Insufficient funds</li>
@@ -33,29 +33,29 @@
         <li>Card declined by your bank</li>
         <li>Incorrect billing information</li>
       </ul>
-      
+
       <p><strong>What happens next?</strong></p>
       <p>
         <% if @next_attempt_date %>
-          We'll automatically retry the payment on <%= @next_attempt_date.strftime("%B %d, %Y") %>. 
+          We'll automatically retry the payment on <%= @next_attempt_date.strftime("%B %d, %Y") %>.
         <% else %>
           We'll automatically retry the payment in a few days.
         <% end %>
         To avoid any interruption to your subscription, please update your payment method as soon as possible.
       </p>
-      
+
       <div style="text-align: center;">
         <a href="<%= manage_donations_url %>" class="button">Update Payment Method</a>
       </div>
-      
+
       <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
-      
+
       <p>Thank you,<br>The ChurchNeeds.net Team</p>
     </div>
-    
+
     <div class="footer">
       <p>Roaring Lamb Productions<br>
-      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+      Questions? <a href="<%= new_contact_url %>">Contact our support team</a></p>
     </div>
   </div>
 </body>

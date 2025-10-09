@@ -19,40 +19,40 @@
     <div class="header">
       <h1>Donation Amount Updated</h1>
     </div>
-    
+
     <div class="content">
       <p>Hi <%= @owner.name %>,</p>
-      
+
       <p>Your ChurchNeeds.net donation amount has been successfully updated!</p>
-      
+
       <div class="amount-change">
         <p style="margin: 0; color: #6b7280;">Previous Amount</p>
         <p class="old-amount" style="margin: 10px 0;">$<%= sprintf("%.2f", @old_amount) %></p>
-        
+
         <p style="margin: 20px 0; font-size: 24px;">↓</p>
-        
+
         <p style="margin: 0; color: #6b7280;">New Amount</p>
         <p class="new-amount" style="margin: 10px 0;">$<%= sprintf("%.2f", @new_amount) %></p>
         <p style="margin: 0; color: #6b7280;">Billed yearly</p>
       </div>
-      
+
       <div style="background-color: #dbeafe; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0; border-radius: 4px;">
         <p style="margin: 0;"><strong>📅 When will this take effect?</strong></p>
         <p style="margin: 10px 0 0 0;">Your new amount will be charged on your next billing date: <strong><%= @next_payment_date.strftime("%B %d, %Y") %></strong></p>
       </div>
-      
+
       <p>Thank you for your continued support of ChurchNeeds.net!</p>
-      
+
       <div style="text-align: center;">
         <a href="<%= manage_donations_url %>" class="button">View Subscription Details</a>
       </div>
-      
+
       <p>Blessings,<br>The ChurchNeeds.net Team</p>
     </div>
-    
+
     <div class="footer">
       <p>Roaring Lamb Productions<br>
-      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+      Questions? <a href="<%= new_contact_url %>">Contact our support team</a></p>
     </div>
   </div>
 </body>

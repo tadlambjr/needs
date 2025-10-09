@@ -22,11 +22,23 @@ module Authentication
     end
 
     def resume_session
-      Current.session ||= find_session_by_cookie
+      Current.session ||= find_session_by_cookie || find_session_by_restore_token
     end
 
     def find_session_by_cookie
       Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+    end
+    
+    def find_session_by_restore_token
+      return nil unless params[:restore_token].present?
+      
+      session = Session.find_by_restore_token(params[:restore_token])
+      if session
+        # Restore the session cookie
+        Current.session = session
+        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        session
+      end
     end
 
     def request_authentication
