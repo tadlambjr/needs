@@ -10,12 +10,11 @@ class SubscriptionsMailer < ApplicationMailer
     )
   end
   
-  def payment_succeeded(subscription, invoice)
+  def payment_succeeded(subscription, amount_paid)
     @subscription = subscription
     @church = subscription.church
     @owner = @church.owner
-    @invoice = invoice
-    @amount = invoice.amount_paid / 100.0
+    @amount = amount_paid
     @next_payment_date = subscription.next_billing_date
     
     mail(
@@ -24,13 +23,12 @@ class SubscriptionsMailer < ApplicationMailer
     )
   end
   
-  def payment_failed(subscription, invoice)
+  def payment_failed(subscription, amount_due, next_attempt_date)
     @subscription = subscription
     @church = subscription.church
     @owner = @church.owner
-    @invoice = invoice
-    @amount = invoice.amount_due / 100.0
-    @next_attempt_date = invoice.next_payment_attempt ? Time.at(invoice.next_payment_attempt) : nil
+    @amount = amount_due
+    @next_attempt_date = next_attempt_date
     
     mail(
       to: @owner.email_address,

@@ -304,10 +304,13 @@ class DonationsController < ApplicationController
     # Update subscription status to active
     subscription.update(status: :active)
     
-    # Send payment success email
-    SubscriptionsMailer.payment_succeeded(subscription, invoice).deliver_later
+    # Extract amount for email (convert from cents to dollars)
+    amount_paid = invoice.amount_paid / 100.0
     
-    Rails.logger.info "Payment succeeded for subscription #{subscription.id}: #{invoice.amount_paid / 100.0}"
+    # Send payment success email
+    SubscriptionsMailer.payment_succeeded(subscription, amount_paid).deliver_later
+    
+    Rails.logger.info "Payment succeeded for subscription #{subscription.id}: $#{amount_paid}"
   end
   
   def handle_invoice_payment_failed(invoice)
@@ -320,10 +323,14 @@ class DonationsController < ApplicationController
     # Update subscription status
     subscription.update(status: :past_due)
     
-    # Send payment failed email
-    SubscriptionsMailer.payment_failed(subscription, invoice).deliver_later
+    # Extract data for email
+    amount_due = invoice.amount_due / 100.0
+    next_attempt = invoice.next_payment_attempt ? Time.at(invoice.next_payment_attempt) : nil
     
-    Rails.logger.error "Payment failed for subscription #{subscription.id}"
+    # Send payment failed email
+    SubscriptionsMailer.payment_failed(subscription, amount_due, next_attempt).deliver_later
+    
+    Rails.logger.error "Payment failed for subscription #{subscription.id}: $#{amount_due}"
   end
   
   def handle_customer_updated(customer)
