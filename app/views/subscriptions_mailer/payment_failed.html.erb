@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #ef4444; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+    .button { display: inline-block; background-color: #ef4444; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+    .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+    .alert { background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 15px; margin: 20px 0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Payment Failed - Action Required</h1>
+    </div>
+    
+    <div class="content">
+      <p>Hi <%= @owner.name %>,</p>
+      
+      <div class="alert">
+        <strong>⚠️ Your payment could not be processed</strong>
+        <p style="margin: 10px 0 0 0;">We were unable to process your payment of $<%= sprintf("%.2f", @amount) %> for your ChurchNeeds.net subscription.</p>
+      </div>
+      
+      <p><strong>Common reasons for payment failure:</strong></p>
+      <ul>
+        <li>Insufficient funds</li>
+        <li>Expired credit card</li>
+        <li>Card declined by your bank</li>
+        <li>Incorrect billing information</li>
+      </ul>
+      
+      <p><strong>What happens next?</strong></p>
+      <p>
+        <% if @next_attempt_date %>
+          We'll automatically retry the payment on <%= @next_attempt_date.strftime("%B %d, %Y") %>. 
+        <% else %>
+          We'll automatically retry the payment in a few days.
+        <% end %>
+        To avoid any interruption to your subscription, please update your payment method as soon as possible.
+      </p>
+      
+      <div style="text-align: center;">
+        <a href="<%= manage_donations_url %>" class="button">Update Payment Method</a>
+      </div>
+      
+      <p>If you have any questions or need assistance, please don't hesitate to contact us.</p>
+      
+      <p>Thank you,<br>The ChurchNeeds.net Team</p>
+    </div>
+    
+    <div class="footer">
+      <p>Roaring Lamb Productions<br>
+      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+    </div>
+  </div>
+</body>
+</html>

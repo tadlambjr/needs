@@ -1,8 +1,12 @@
 class DonationsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:webhook]
   allow_unauthenticated_access only: [:webhook]
-  before_action :ensure_owner, only: [:new, :create, :manage, :update_amount, :cancel, :reactivate]
+  before_action :ensure_owner, only: [:new, :create, :success, :manage, :update_amount, :cancel, :reactivate]
   before_action :set_subscription, only: [:manage, :update_amount, :cancel, :reactivate]
+  
+  # Rate limiting to prevent abuse
+  rate_limit to: 5, within: 1.minute, only: [:create], with: -> { redirect_to new_donation_path, alert: "Too many requests. Please try again in a moment." }
+  rate_limit to: 10, within: 5.minutes, only: [:update_amount, :cancel, :reactivate], with: -> { redirect_to manage_donations_path, alert: "Too many requests. Please try again in a moment." }
   
   # GET /donations/new
   def new
@@ -43,7 +47,7 @@ class DonationsController < ApplicationController
           quantity: 1,
         }],
         mode: 'subscription',
-        success_url: donations_success_url,
+        success_url: success_donations_url,
         cancel_url: new_donation_url,
         metadata: {
           church_id: current_church.id,
@@ -76,6 +80,9 @@ class DonationsController < ApplicationController
       flash[:notice] = "You don't have an active subscription."
       redirect_to new_donation_path and return
     end
+    
+    # Sync latest subscription data from Stripe
+    sync_subscription_from_stripe
   end
   
   # PATCH /donations/update_amount
@@ -88,7 +95,12 @@ class DonationsController < ApplicationController
       redirect_to manage_donations_path and return
     end
     
+    old_amount_cents = @subscription.amount_cents
+    
     if @subscription.update_amount(new_amount_cents)
+      # Send confirmation email
+      SubscriptionsMailer.amount_updated(@subscription, old_amount_cents, new_amount_cents).deliver_later
+      
       flash[:notice] = "Your donation amount has been updated to $#{new_amount}."
       redirect_to manage_donations_path
     else
@@ -100,6 +112,9 @@ class DonationsController < ApplicationController
   # POST /donations/cancel
   def cancel
     if @subscription.cancel_subscription
+      # Send cancellation confirmation email
+      SubscriptionsMailer.subscription_canceled(@subscription).deliver_later
+      
       flash[:notice] = "Your subscription will be canceled at the end of the current billing period."
       redirect_to manage_donations_path
     else
@@ -145,6 +160,10 @@ class DonationsController < ApplicationController
       handle_subscription_updated(event.data.object)
     when 'customer.subscription.deleted'
       handle_subscription_deleted(event.data.object)
+    when 'invoice.payment_succeeded'
+      handle_invoice_payment_succeeded(event.data.object)
+    when 'invoice.payment_failed'
+      handle_invoice_payment_failed(event.data.object)
     end
     
     head :ok
@@ -191,21 +210,28 @@ class DonationsController < ApplicationController
     amount_cents = session.metadata.amount_cents
     
     # Retrieve the subscription from Stripe
-    subscription = Stripe::Subscription.retrieve(session.subscription)
+    stripe_subscription = Stripe::Subscription.retrieve(session.subscription)
     
-    # Create or update the subscription record
-    Subscription.create!(
+    # Find or create the subscription record to avoid duplicates
+    subscription = Subscription.find_or_initialize_by(stripe_subscription_id: stripe_subscription.id)
+    subscription.assign_attributes(
       church_id: church_id,
-      stripe_subscription_id: subscription.id,
-      stripe_customer_id: subscription.customer,
+      stripe_customer_id: stripe_subscription.customer,
       status: :active,
       amount_cents: amount_cents,
       currency: 'usd',
       interval: 'year',
-      current_period_start: Time.at(subscription.current_period_start),
-      current_period_end: Time.at(subscription.current_period_end),
+      current_period_start: Time.at(stripe_subscription.current_period_start),
+      current_period_end: Time.at(stripe_subscription.current_period_end),
       cancel_at_period_end: false
     )
+    
+    if subscription.save
+      # Send confirmation email
+      SubscriptionsMailer.subscription_created(subscription).deliver_later
+    else
+      Rails.logger.error "Failed to save subscription: #{subscription.errors.full_messages.join(', ')}"
+    end
   end
   
   def handle_subscription_updated(stripe_subscription)
@@ -228,5 +254,48 @@ class DonationsController < ApplicationController
       status: :canceled,
       canceled_at: Time.current
     )
+  end
+  
+  def sync_subscription_from_stripe
+    return unless @subscription&.stripe_subscription_id.present?
+    
+    begin
+      stripe_subscription = Stripe::Subscription.retrieve(@subscription.stripe_subscription_id)
+      
+      @subscription.update(
+        status: stripe_subscription.status,
+        current_period_start: Time.at(stripe_subscription.current_period_start),
+        current_period_end: Time.at(stripe_subscription.current_period_end),
+        cancel_at_period_end: stripe_subscription.cancel_at_period_end
+      )
+    rescue Stripe::StripeError => e
+      Rails.logger.error "Failed to sync subscription from Stripe: #{e.message}"
+    end
+  end
+  
+  def handle_invoice_payment_succeeded(invoice)
+    subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+    return unless subscription
+    
+    # Update subscription status to active
+    subscription.update(status: :active)
+    
+    # Send payment success email
+    SubscriptionsMailer.payment_succeeded(subscription, invoice).deliver_later
+    
+    Rails.logger.info "Payment succeeded for subscription #{subscription.id}: #{invoice.amount_paid / 100.0}"
+  end
+  
+  def handle_invoice_payment_failed(invoice)
+    subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+    return unless subscription
+    
+    # Update subscription status
+    subscription.update(status: :past_due)
+    
+    # Send payment failed email
+    SubscriptionsMailer.payment_failed(subscription, invoice).deliver_later
+    
+    Rails.logger.error "Payment failed for subscription #{subscription.id}"
   end
 end

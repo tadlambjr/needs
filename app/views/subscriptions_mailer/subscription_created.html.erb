@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #0ea5e9; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+    .button { display: inline-block; background-color: #0ea5e9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+    .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+    .amount { font-size: 24px; font-weight: bold; color: #0ea5e9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Thank You for Your Support! 🎉</h1>
+    </div>
+    
+    <div class="content">
+      <p>Hi <%= @owner.name %>,</p>
+      
+      <p>Your donation to ChurchNeeds.net has been successfully set up!</p>
+      
+      <div style="background-color: white; padding: 20px; border-radius: 6px; margin: 20px 0;">
+        <p style="margin: 0; color: #6b7280;">Your Donation Amount</p>
+        <p class="amount" style="margin: 10px 0;">$<%= @subscription.amount_in_dollars %></p>
+        <p style="margin: 0; color: #6b7280;">Billed yearly</p>
+      </div>
+      
+      <p>Your support helps us:</p>
+      <ul>
+        <li>Keep ChurchNeeds.net free for all churches</li>
+        <li>Cover hosting and infrastructure costs</li>
+        <li>Develop new features and improvements</li>
+        <li>Provide reliable service to the church community</li>
+      </ul>
+      
+      <p>You can manage your subscription, update the amount, or cancel at any time from your account settings.</p>
+      
+      <div style="text-align: center;">
+        <a href="<%= manage_donations_url %>" class="button">Manage Subscription</a>
+      </div>
+      
+      <p>Thank you for being part of our mission to serve churches!</p>
+      
+      <p>Blessings,<br>The ChurchNeeds.net Team</p>
+    </div>
+    
+    <div class="footer">
+      <p>Roaring Lamb Productions<br>
+      Questions? Email us at <a href="mailto:support@roaringlambproductions.com">support@roaringlambproductions.com</a></p>
+    </div>
+  </div>
+</body>
+</html>
