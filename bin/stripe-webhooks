@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Start Stripe webhook forwarding for local development
+
+echo "🔌 Starting Stripe webhook forwarding..."
+echo ""
+echo "This will forward Stripe webhooks to: http://localhost:3007/webhooks/stripe"
+echo ""
+echo "Press Ctrl+C to stop"
+echo ""
+
+stripe listen --forward-to localhost:3007/webhooks/stripe \
+  --events checkout.session.completed,customer.subscription.updated,customer.subscription.deleted,customer.updated,invoice.payment_succeeded,invoice.payment_failed

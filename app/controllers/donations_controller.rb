@@ -1,7 +1,7 @@
 class DonationsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:webhook]
-  allow_unauthenticated_access only: [:webhook]
-  before_action :ensure_owner, only: [:new, :create, :success, :manage, :update_amount, :cancel, :reactivate]
+  allow_unauthenticated_access only: [:webhook, :success]
+  before_action :ensure_owner, only: [:new, :create, :manage, :update_amount, :cancel, :reactivate]
   before_action :set_subscription, only: [:manage, :update_amount, :cancel, :reactivate]
   
   # Rate limiting to prevent abuse
@@ -141,15 +141,31 @@ class DonationsController < ApplicationController
     endpoint_secret = ENV['STRIPE_WEBHOOK_SECRET']
     
     begin
-      event = Stripe::Webhook.construct_event(
-        payload, sig_header, endpoint_secret
-      )
+      # In development with stripe CLI, construct event from JSON if signature verification fails
+      if Rails.env.development? && endpoint_secret.blank?
+        event = Stripe::Event.construct_from(JSON.parse(payload, symbolize_names: true))
+      else
+        event = Stripe::Webhook.construct_event(
+          payload, sig_header, endpoint_secret
+        )
+      end
     rescue JSON::ParserError => e
       Rails.logger.error "JSON::ParserError in webhook: #{e.message}"
       head :bad_request and return
     rescue Stripe::SignatureVerificationError => e
       Rails.logger.error "Stripe signature verification failed: #{e.message}"
-      head :bad_request and return
+      # In development, try to parse the event anyway for testing
+      if Rails.env.development?
+        Rails.logger.warn "Development mode: Processing webhook without signature verification"
+        begin
+          event = Stripe::Event.construct_from(JSON.parse(payload, symbolize_names: true))
+        rescue => parse_error
+          Rails.logger.error "Failed to parse webhook payload: #{parse_error.message}"
+          head :bad_request and return
+        end
+      else
+        head :bad_request and return
+      end
     end
     
     # Handle the event
@@ -164,6 +180,8 @@ class DonationsController < ApplicationController
       handle_invoice_payment_succeeded(event.data.object)
     when 'invoice.payment_failed'
       handle_invoice_payment_failed(event.data.object)
+    when 'customer.updated'
+      handle_customer_updated(event.data.object)
     end
     
     head :ok
@@ -221,8 +239,8 @@ class DonationsController < ApplicationController
       amount_cents: amount_cents,
       currency: 'usd',
       interval: 'year',
-      current_period_start: Time.at(stripe_subscription.current_period_start),
-      current_period_end: Time.at(stripe_subscription.current_period_end),
+      current_period_start: extract_period_start(stripe_subscription),
+      current_period_end: extract_period_end(stripe_subscription),
       cancel_at_period_end: false
     )
     
@@ -240,8 +258,8 @@ class DonationsController < ApplicationController
     
     subscription.update(
       status: stripe_subscription.status,
-      current_period_start: Time.at(stripe_subscription.current_period_start),
-      current_period_end: Time.at(stripe_subscription.current_period_end),
+      current_period_start: extract_period_start(stripe_subscription),
+      current_period_end: extract_period_end(stripe_subscription),
       cancel_at_period_end: stripe_subscription.cancel_at_period_end
     )
   end
@@ -264,8 +282,8 @@ class DonationsController < ApplicationController
       
       @subscription.update(
         status: stripe_subscription.status,
-        current_period_start: Time.at(stripe_subscription.current_period_start),
-        current_period_end: Time.at(stripe_subscription.current_period_end),
+        current_period_start: extract_period_start(stripe_subscription),
+        current_period_end: extract_period_end(stripe_subscription),
         cancel_at_period_end: stripe_subscription.cancel_at_period_end
       )
     rescue Stripe::StripeError => e
@@ -274,7 +292,10 @@ class DonationsController < ApplicationController
   end
   
   def handle_invoice_payment_succeeded(invoice)
-    subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+    subscription_id = extract_subscription_id_from_invoice(invoice)
+    return unless subscription_id
+    
+    subscription = Subscription.find_by(stripe_subscription_id: subscription_id)
     return unless subscription
     
     # Update subscription status to active
@@ -287,7 +308,10 @@ class DonationsController < ApplicationController
   end
   
   def handle_invoice_payment_failed(invoice)
-    subscription = Subscription.find_by(stripe_subscription_id: invoice.subscription)
+    subscription_id = extract_subscription_id_from_invoice(invoice)
+    return unless subscription_id
+    
+    subscription = Subscription.find_by(stripe_subscription_id: subscription_id)
     return unless subscription
     
     # Update subscription status
@@ -297,5 +321,51 @@ class DonationsController < ApplicationController
     SubscriptionsMailer.payment_failed(subscription, invoice).deliver_later
     
     Rails.logger.error "Payment failed for subscription #{subscription.id}"
+  end
+  
+  def handle_customer_updated(customer)
+    # Find all subscriptions for this customer
+    subscriptions = Subscription.where(stripe_customer_id: customer.id)
+    return if subscriptions.empty?
+    
+    Rails.logger.info "Customer updated: #{customer.id} - #{subscriptions.count} subscription(s) found"
+    
+    # Log customer changes for monitoring
+    # This webhook fires when customer email, name, or payment method changes
+    # Currently we don't cache customer details, so just log for monitoring
+  end
+  
+  # Helper methods for Stripe API compatibility
+  def extract_period_start(stripe_subscription)
+    # Try new API structure first (nested in items), fall back to old structure
+    if stripe_subscription.items&.data&.first&.current_period_start
+      Time.at(stripe_subscription.items.data.first.current_period_start)
+    elsif stripe_subscription.respond_to?(:current_period_start)
+      Time.at(stripe_subscription.current_period_start)
+    else
+      Time.current
+    end
+  end
+  
+  def extract_period_end(stripe_subscription)
+    # Try new API structure first (nested in items), fall back to old structure
+    if stripe_subscription.items&.data&.first&.current_period_end
+      Time.at(stripe_subscription.items.data.first.current_period_end)
+    elsif stripe_subscription.respond_to?(:current_period_end)
+      Time.at(stripe_subscription.current_period_end)
+    else
+      Time.current + 1.year
+    end
+  end
+  
+  def extract_subscription_id_from_invoice(invoice)
+    # Try new API structure first (parent.subscription_details), fall back to old structure
+    if invoice.parent&.subscription_details&.subscription
+      invoice.parent.subscription_details.subscription
+    elsif invoice.respond_to?(:subscription)
+      invoice.subscription
+    else
+      nil
+    end
   end
 end
