@@ -54,23 +54,17 @@ Rails.application.configure do
   # Replace the default in-process and non-durable queuing backend for Active Job.
   # config.active_job.queue_adapter = :resque
 
-  # Enable delivery errors for SMTP
+  # Enable delivery errors
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "churchneeds.net" }
+  config.action_mailer.default_url_options = { host: "churchneeds.net", protocol: "https" }
 
-  # SMTP settings for info@churchneeds.net
-  config.action_mailer.smtp_settings = {
-    address: ENV.fetch("SMTP_ADDRESS", "mail.churchneeds.net"),
-    port: ENV.fetch("SMTP_PORT", "465").to_i,
-    domain: "churchneeds.net",
-    user_name: ENV["EMAIL_USERNAME"],
-    password: ENV["EMAIL_PASSWORD"],
-    authentication: :plain,
-    enable_starttls_auto: true
+  # Use Postmark for email delivery in production
+  config.action_mailer.delivery_method = :postmark
+  config.action_mailer.postmark_settings = {
+    api_token: ENV['POSTMARK_API_TOKEN']
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to

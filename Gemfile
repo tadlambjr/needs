@@ -48,6 +48,7 @@ gem "thruster", require: false
 # ==========================================================
 gem "dotenv-rails"       # Load environment variables from .env files
 gem "stripe"             # Stripe for payment processing
+gem "postmark-rails"     # Postmark for transactional email delivery
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
