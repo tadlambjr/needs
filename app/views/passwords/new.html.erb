@@ -1,7 +1,8 @@
 <% content_for :hide_footer, true %>
 <% content_for :container_class, '' %>
 
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-500 to-yellow-200 to-pink-500 dark:from-sky-900 dark:via-purple-900 dark:to-pink-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="fixed inset-0 overflow-y-auto bg-gradient-to-br from-slate-500 to-yellow-200 to-pink-500 dark:from-sky-900 dark:via-purple-900 dark:to-pink-900">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full">
     <div class="text-center mb-8">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-white dark:bg-gray-800 rounded-full shadow-lg mb-4">
@@ -35,5 +36,6 @@
         </div>
       <% end %>
     </div>
+  </div>
   </div>
 </div>

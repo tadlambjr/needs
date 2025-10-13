@@ -9,8 +9,8 @@ servers:
     hosts:
       - roaring-lamb-staging
     options:
-      memory: 256m
-      memory-swap: 256m
+      memory: 384m
+      memory-swap: 384m
       cpus: 0.5
 
 proxy:
@@ -40,9 +40,12 @@ env:
     - STRIPE_PUBLISHABLE_KEY
     - STRIPE_WEBHOOK_SECRET
   clear:
+    # Set the host for URL generation (staging environment)
+    APP_HOST: staging.churchneeds.net
+
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
-    # SOLID_QUEUE_IN_PUMA: true
+    SOLID_QUEUE_IN_PUMA: true
     PORT: 3000
 
     # Optimize for low traffic (max 2 concurrent users)

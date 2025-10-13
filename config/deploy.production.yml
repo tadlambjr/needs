@@ -20,22 +20,14 @@ proxy:
 env:
   secret:
     - RAILS_MASTER_KEY
-    - EMAIL_USERNAME
-    - EMAIL_PASSWORD
+    - POSTMARK_API_TOKEN
   clear:
     # Standard production Puma configuration for 1GB RAM
     WEB_CONCURRENCY: 2
     RAILS_MAX_THREADS: 5
 
     # Run Solid Queue inside Puma for single-server setup
-    # SOLID_QUEUE_IN_PUMA: true
-
-    # SMTP configuration
-    SMTP_ADDRESS: mail.churchneeds.net
-    SMTP_PORT: 465
-    SMTP_DOMAIN: churchneeds.net
-    SMTP_AUTHENTICATION: login
-    SMTP_ENABLE_STARTTLS_AUTO: true
+    SOLID_QUEUE_IN_PUMA: true
 
 # Use a different ssh user than root
 ssh:

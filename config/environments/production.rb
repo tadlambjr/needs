@@ -15,7 +15,7 @@ Rails.application.configure do
   # Turn on fragment caching in view templates.
   config.action_controller.perform_caching = true
 
-  config.action_controller.default_url_options = { host: "churchneeds.net", protocol: "https" }
+  config.action_controller.default_url_options = { host: ENV.fetch("APP_HOST", "churchneeds.net"), protocol: "https" }
 
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
@@ -52,19 +52,20 @@ Rails.application.configure do
   # config.cache_store = :mem_cache_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.
-  # config.active_job.queue_adapter = :resque
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Enable delivery errors
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_deliveries = true
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "churchneeds.net", protocol: "https" }
+  config.action_mailer.default_url_options = { host: ENV.fetch("APP_HOST", "churchneeds.net"), protocol: "https" }
 
   # Use Postmark for email delivery in production
   config.action_mailer.delivery_method = :postmark
   config.action_mailer.postmark_settings = {
-    api_token: ENV['POSTMARK_API_TOKEN']
+    api_token: ENV["POSTMARK_API_TOKEN"]
   }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
