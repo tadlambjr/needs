@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_09_020045) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_13_130225) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -244,10 +244,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_09_020045) do
     t.integer "church_id", null: false
     t.boolean "is_church_admin", default: false, null: false
     t.boolean "is_owner", default: false, null: false
+    t.integer "email_bounce_status", default: 0, null: false
+    t.datetime "email_bounced_at"
+    t.datetime "email_complaint_at"
+    t.boolean "email_suppressed", default: false, null: false
+    t.datetime "last_email_sent_at"
+    t.integer "bounce_count", default: 0, null: false
     t.index ["church_id", "is_church_admin"], name: "index_users_on_church_id_and_is_church_admin"
     t.index ["church_id", "is_owner"], name: "index_users_on_church_id_and_is_owner", where: "is_owner = 1"
     t.index ["church_id"], name: "index_users_on_church_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["email_bounce_status"], name: "index_users_on_email_bounce_status"
+    t.index ["email_suppressed"], name: "index_users_on_email_suppressed"
   end
 
   add_foreign_key "categories", "churches"

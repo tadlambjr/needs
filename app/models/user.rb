@@ -13,6 +13,7 @@ class User < ApplicationRecord
   # Enums
   enum :role, { member: 0, admin: 1 }, default: :member
   enum :theme_preference, { system: 0, light: 1, dark: 2 }, default: :system
+  enum :email_bounce_status, { no_bounce: 0, soft_bounce: 1, hard_bounce: 2 }, default: :no_bounce
 
   # Normalizations
   normalizes :email_address, with: ->(e) { e.strip.downcase }
@@ -34,6 +35,7 @@ class User < ApplicationRecord
   scope :admins, -> { where(role: :admin) }
   scope :members, -> { where(role: :member) }
   scope :owners, -> { where(is_owner: true) }
+  scope :emailable, -> { where(email_suppressed: false, active: true) }
   
   # Instance methods
   def admin?
@@ -70,6 +72,47 @@ class User < ApplicationRecord
     return false unless target_user.admin? || target_user.is_church_admin?
     return false if target_user.id == id
     target_user.church_id == church_id
+  end
+  
+  # Email deliverability methods
+  def can_receive_email?
+    !email_suppressed? && active?
+  end
+  
+  def suppress_email!(reason:)
+    update!(
+      email_suppressed: true,
+      email_bounced_at: Time.current
+    )
+    Rails.logger.info "Email suppressed for user #{id}: #{reason}"
+  end
+  
+  def record_bounce!(type:)
+    increment!(:bounce_count)
+    update!(
+      email_bounce_status: type,
+      email_bounced_at: Time.current
+    )
+    
+    # Suppress after hard bounce or 3+ soft bounces
+    suppress_email!(reason: "#{type} bounce") if type == "hard_bounce" || bounce_count >= 3
+  end
+  
+  def record_spam_complaint!
+    update!(
+      email_complaint_at: Time.current,
+      email_suppressed: true
+    )
+    Rails.logger.warn "Spam complaint recorded for user #{id}"
+  end
+  
+  def unsuppress_email!
+    update!(
+      email_suppressed: false,
+      email_bounce_status: :no_bounce,
+      bounce_count: 0
+    )
+    Rails.logger.info "Email unsuppressed for user #{id}"
   end
   
   private

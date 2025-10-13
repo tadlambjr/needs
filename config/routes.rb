@@ -92,8 +92,9 @@ Rails.application.routes.draw do
     end
   end
   
-  # Stripe webhook
+  # Webhooks
   post '/webhooks/stripe', to: 'donations#webhook'
+  post '/webhooks/postmark', to: 'webhooks/postmark#create'
   
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
