@@ -65,6 +65,10 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
     resources :users, only: [:index, :edit, :update] do
+      collection do
+        get :import
+        post :process_import
+      end
       member do
         post :transfer_ownership
       end
@@ -95,6 +99,7 @@ Rails.application.routes.draw do
   # Webhooks
   post '/webhooks/stripe', to: 'donations#webhook'
   post '/webhooks/postmark', to: 'webhooks/postmark#create'
+  post '/webhooks/telnyx', to: 'webhooks/telnyx#create'
   
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

@@ -7,16 +7,29 @@
     <h2 class="text-xl font-bold mb-4">Notification Preferences</h2>
     <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Choose how you'd like to be notified for each event type.</p>
     
+    <% if Current.user.phone.blank? %>
+      <div class="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <p class="text-sm text-amber-800 dark:text-amber-200">
+          📱 <strong>SMS notifications are disabled.</strong> 
+          <%= link_to "Add your phone number", profile_path, class: "underline hover:text-amber-900" %> to enable SMS notifications.
+        </p>
+      </div>
+    <% end %>
+    
     <%= form_with url: settings_path, method: :patch, local: true do |f| %>
       <div class="space-y-6">
         <% Notification.notification_types.keys.each do |type| %>
           <% pref = @notification_preferences[type] || Current.user.notification_preferences.build(notification_type: type) %>
           <div class="border-b border-gray-200 dark:border-gray-700 pb-4 last:border-0">
             <h3 class="font-medium mb-3"><%= type.to_s.titleize %></h3>
-            <div class="grid grid-cols-2 gap-4 ml-4">
+            <div class="grid grid-cols-3 gap-4 ml-4">
               <div class="flex items-center">
                 <%= check_box_tag "notification_preferences[#{type}][email_enabled]", "1", pref.email_enabled, class: "mr-2 h-4 w-4 text-sky-600 border-gray-300 rounded" %>
                 <%= label_tag "notification_preferences_#{type}_email_enabled", "Email", class: "text-sm" %>
+              </div>
+              <div class="flex items-center">
+                <%= check_box_tag "notification_preferences[#{type}][sms_enabled]", "1", pref.sms_enabled, class: "mr-2 h-4 w-4 text-sky-600 border-gray-300 rounded", disabled: Current.user.phone.blank? %>
+                <%= label_tag "notification_preferences_#{type}_sms_enabled", "SMS", class: "text-sm #{Current.user.phone.blank? ? 'text-gray-400' : ''}" %>
               </div>
               <div class="flex items-center">
                 <%= check_box_tag "notification_preferences[#{type}][in_app_enabled]", "1", pref.in_app_enabled, class: "mr-2 h-4 w-4 text-sky-600 border-gray-300 rounded" %>
@@ -40,6 +53,14 @@
       <div>
         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
         <p class="mt-1"><%= @user.email_address %></p>
+      </div>
+      
+      <div>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Phone Number</p>
+        <p class="mt-1">
+          <%= @user.phone.present? ? @user.phone : "Not set" %>
+          <%= link_to "Edit", profile_path, class: "ml-2 text-sky-600 dark:text-sky-400 hover:text-sky-800 text-sm" %>
+        </p>
       </div>
       
       <div>

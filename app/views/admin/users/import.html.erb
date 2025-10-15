@@ -1,0 +1,134 @@
+<% content_for :title, "Import Users" %>
+
+<div class="max-w-4xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-3xl font-bold">Import Users</h1>
+    <%= link_to "Back to Users", admin_users_path, class: "text-sky-600 dark:text-sky-400 hover:text-sky-800" %>
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">Upload CSV File</h2>
+      <%= link_to "Download Sample CSV", "/sample_user_import.csv", 
+          class: "text-sm px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-200 dark:hover:bg-gray-600",
+          download: "sample_user_import.csv" %>
+    </div>
+    
+    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+      <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">CSV Format Requirements</h3>
+      <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
+        Your CSV file must include the following columns with headers:
+      </p>
+      <ul class="list-disc list-inside text-sm text-blue-800 dark:text-blue-200 space-y-1 mb-3">
+        <li><strong>name</strong> - Full name of the user (required, minimum 2 characters)</li>
+        <li><strong>email</strong> - Email address (required, must be unique)</li>
+      </ul>
+      <p class="text-sm text-blue-800 dark:text-blue-200 mb-2">
+        <strong>Example CSV:</strong>
+      </p>
+      <pre class="text-xs bg-white dark:bg-gray-900 p-2 rounded border border-blue-300 dark:border-blue-700">name,email
+John Smith,john.smith@example.com
+Jane Doe,jane.doe@example.com
+Bob Johnson,bob.johnson@example.com</pre>
+    </div>
+
+    <div class="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+      <h3 class="font-semibold text-amber-900 dark:text-amber-100 mb-2">🔐 Password & Account Setup</h3>
+      <ul class="list-disc list-inside text-sm text-amber-800 dark:text-amber-200 space-y-1">
+        <li>Each user will be created with a secure random password</li>
+        <li>A welcome email will be automatically sent to each new user with a link to set their password</li>
+        <li>Users can set their own password by clicking the link in the welcome email</li>
+        <li>All imported users will be created as <strong>Members</strong> (not admins)</li>
+        <li>Accounts will be active but email unverified until they set their password</li>
+      </ul>
+    </div>
+
+    <%= form_with url: process_import_admin_users_path, multipart: true, class: "space-y-4" do |form| %>
+      <div>
+        <%= form.label :file, "Select CSV File", class: "block text-sm font-medium mb-2" %>
+        <%= form.file_field :file, 
+            accept: ".csv,text/csv",
+            required: true,
+            class: "block w-full text-sm text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 focus:outline-none" %>
+      </div>
+
+      <div class="flex gap-3">
+        <%= form.submit "Import Users", 
+            class: "px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2",
+            data: { turbo_confirm: "Are you sure you want to import these users? Welcome emails will be sent to all new users." } %>
+        <%= link_to "Cancel", admin_users_path, 
+            class: "px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if flash[:import_results].present? %>
+    <% results = flash[:import_results] %>
+    
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-4">Import Results</h2>
+      
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          <div class="text-3xl font-bold text-green-600 dark:text-green-400"><%= results[:created].count %></div>
+          <div class="text-sm text-green-800 dark:text-green-200">Users Created</div>
+        </div>
+        <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <div class="text-3xl font-bold text-red-600 dark:text-red-400"><%= results[:failed].count %></div>
+          <div class="text-sm text-red-800 dark:text-red-200">Failed</div>
+        </div>
+      </div>
+
+      <% if results[:created].any? %>
+        <div class="mb-6">
+          <h3 class="font-semibold text-green-700 dark:text-green-300 mb-3">✓ Successfully Created Users</h3>
+          <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+            <ul class="space-y-2 text-sm">
+              <% results[:created].each do |user| %>
+                <li class="flex items-center gap-2">
+                  <span class="text-green-600 dark:text-green-400">✓</span>
+                  <span class="font-medium"><%= user.name %></span>
+                  <span class="text-gray-500 dark:text-gray-400">(<%= user.email_address %>)</span>
+                  <span class="text-xs text-green-600 dark:text-green-400">- Welcome email sent</span>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+
+      <% if results[:failed].any? %>
+        <div>
+          <h3 class="font-semibold text-red-700 dark:text-red-300 mb-3">✗ Failed to Create</h3>
+          <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+            <ul class="space-y-3 text-sm">
+              <% results[:failed].each do |record| %>
+                <li>
+                  <div class="flex items-start gap-2">
+                    <span class="text-red-600 dark:text-red-400 mt-0.5">✗</span>
+                    <div>
+                      <div class="font-medium"><%= record[:name] %> (<%= record[:email] %>)</div>
+                      <div class="text-red-600 dark:text-red-400 text-xs mt-1"><%= record[:errors] %></div>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+    <h3 class="font-semibold mb-3">Tips for Successful Import</h3>
+    <ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 space-y-2">
+      <li>Ensure your CSV file is properly formatted with headers in the first row</li>
+      <li>Email addresses must be unique across your church</li>
+      <li>Names must be at least 2 characters long</li>
+      <li>Empty rows will be automatically skipped</li>
+      <li>Check your email service (Postmark) to ensure welcome emails are being delivered</li>
+      <li>Users can always request a password reset from the login page if they don't receive the welcome email</li>
+    </ul>
+  </div>
+</div>

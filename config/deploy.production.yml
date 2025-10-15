@@ -26,6 +26,9 @@ env:
     - STRIPE_SECRET_KEY
     - STRIPE_PUBLISHABLE_KEY
     - STRIPE_WEBHOOK_SECRET
+    - TELNYX_API_KEY
+    - TELNYX_MESSAGING_PROFILE_ID
+    - TELNYX_PHONE_NUMBER
   clear:
     # Set the host for URL generation (production environment)
     APP_HOST: churchneeds.net

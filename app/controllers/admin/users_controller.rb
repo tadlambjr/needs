@@ -7,6 +7,32 @@ class Admin::UsersController < ApplicationController
     @church_owner = current_church.owner
   end
 
+  def import
+    # Show the import form
+  end
+
+  def process_import
+    unless params[:file].present?
+      redirect_to import_admin_users_path, alert: "Please select a CSV file to upload."
+      return
+    end
+
+    file = params[:file]
+    
+    unless file.content_type == "text/csv" || file.original_filename.end_with?(".csv")
+      redirect_to import_admin_users_path, alert: "Please upload a valid CSV file."
+      return
+    end
+
+    import_service = UserImportService.new(current_church)
+    import_service.import_from_csv(file.path)
+    import_service.send_welcome_emails if import_service.results[:created].any?
+
+    flash[:notice] = "Import completed: #{import_service.results[:created].count} users created, #{import_service.results[:failed].count} failed."
+    flash[:import_results] = import_service.results
+    redirect_to import_admin_users_path
+  end
+
   def edit
     unless @user.can_be_edited_by?(Current.user)
       redirect_to admin_users_path, alert: "Only the church owner can edit the owner's account."

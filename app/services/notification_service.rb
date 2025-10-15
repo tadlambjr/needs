@@ -25,6 +25,14 @@ class NotificationService
       if pref.nil? || pref.email_enabled
         NeedsMailer.new_need(user, need).deliver_later
       end
+      
+      # Send SMS if enabled and user has phone number
+      if pref&.sms_enabled && user.phone.present?
+        SmsService.send_message(
+          to: user.phone,
+          body: "New Need: #{need.title} - #{need.category.name} on #{need.start_date.strftime('%b %d')}. View details at #{need.church.name}."
+        )
+      end
     end
   end
   
@@ -50,6 +58,14 @@ class NotificationService
     if pref.nil? || pref.email_enabled
       NeedsMailer.signup_confirmation(signup).deliver_later
     end
+    
+    # SMS notification
+    if pref&.sms_enabled && user.phone.present?
+      SmsService.send_message(
+        to: user.phone,
+        body: "Confirmed! You're signed up for: #{need.title} on #{need.start_date.strftime('%b %d')}."
+      )
+    end
   end
   
   def self.notify_admins_new_member_need(need)
@@ -73,6 +89,14 @@ class NotificationService
       # Email notification
       if pref.nil? || pref.email_enabled
         NeedsMailer.admin_approval_request(admin, need).deliver_later
+      end
+      
+      # SMS notification
+      if pref&.sms_enabled && admin.phone.present?
+        SmsService.send_message(
+          to: admin.phone,
+          body: "New need pending approval: #{need.title} by #{need.creator.name}."
+        )
       end
     end
   end
@@ -98,6 +122,14 @@ class NotificationService
     # Email notification
     if pref.nil? || pref.email_enabled
       NeedsMailer.need_cancelled(signup).deliver_later
+    end
+    
+    # SMS notification
+    if pref&.sms_enabled && user.phone.present?
+      SmsService.send_message(
+        to: user.phone,
+        body: "Cancelled: #{need.title} on #{need.start_date.strftime('%b %d')} has been cancelled."
+      )
     end
   end
 end

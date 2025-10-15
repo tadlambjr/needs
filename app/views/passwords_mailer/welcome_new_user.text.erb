@@ -1,0 +1,20 @@
+Welcome to <%= @user.church.name %>!
+
+Hi <%= @user.name %>,
+
+Your account has been created by a church administrator. To get started, you'll need to set your password.
+
+Click here to set your password:
+<%= edit_password_url(@user.password_reset_token) %>
+
+This link will expire in 15 minutes for security reasons. If it expires, you can request a new password reset link from the login page.
+
+Once you've set your password, you'll be able to:
+- View and sign up for volunteer opportunities
+- Manage your profile and preferences
+- Receive notifications about church needs
+
+If you have any questions, please contact your church administrator.
+
+Welcome aboard!
+The <%= @user.church.name %> Team

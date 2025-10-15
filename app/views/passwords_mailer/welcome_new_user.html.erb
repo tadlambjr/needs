@@ -1,0 +1,34 @@
+<h2>Welcome to <%= @user.church.name %>!</h2>
+
+<p>Hi <%= @user.name %>,</p>
+
+<p>
+  Your account has been created by a church administrator. To get started, you'll need to set your password.
+</p>
+
+<p>
+  <%= link_to "Click here to set your password", edit_password_url(@user.password_reset_token), 
+      style: "display: inline-block; padding: 12px 24px; background-color: #0284c7; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;" %>
+</p>
+
+<p style="color: #6b7280; font-size: 14px;">
+  This link will expire in 15 minutes for security reasons. If it expires, you can request a new password reset link from the login page.
+</p>
+
+<p>
+  Once you've set your password, you'll be able to:
+</p>
+<ul>
+  <li>View and sign up for volunteer opportunities</li>
+  <li>Manage your profile and preferences</li>
+  <li>Receive notifications about church needs</li>
+</ul>
+
+<p>
+  If you have any questions, please contact your church administrator.
+</p>
+
+<p>
+  Welcome aboard!<br>
+  The <%= @user.church.name %> Team
+</p>
