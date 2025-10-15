@@ -1,6 +1,7 @@
 class Webhooks::PostmarkController < ApplicationController
+  allow_unauthenticated_access
   skip_before_action :verify_authenticity_token
-  before_action :verify_postmark_signature
+  before_action :authenticate_postmark
   
   # Postmark webhook endpoint
   # POST /webhooks/postmark
@@ -68,14 +69,28 @@ class Webhooks::PostmarkController < ApplicationController
     user.update_column(:last_email_sent_at, Time.current)
   end
   
-  def verify_postmark_signature
-    # Postmark doesn't send a signature by default, but you can verify the IP
-    # or use HTTP Basic Auth. For now, we'll just log the request.
-    # In production, consider adding IP whitelist or basic auth.
-    
-    # Postmark IPs (as of 2025): 50.31.156.6, 50.31.156.77, 18.217.206.57
-    # You can add IP verification here if needed
-    
-    Rails.logger.info "Postmark webhook received from IP: #{request.remote_ip}"
+  def authenticate_postmark
+    authenticate_or_request_with_http_basic do |username, password|
+      expected_username = ENV['POSTMARK_WEBHOOK_USERNAME']
+      expected_password = ENV['POSTMARK_WEBHOOK_PASSWORD']
+      
+      # Require both credentials to be set
+      unless expected_username.present? && expected_password.present?
+        Rails.logger.error "Postmark webhook credentials not configured"
+        return false
+      end
+      
+      # Use secure comparison to prevent timing attacks
+      username_valid = ActiveSupport::SecurityUtils.secure_compare(username, expected_username)
+      password_valid = ActiveSupport::SecurityUtils.secure_compare(password, expected_password)
+      
+      if username_valid && password_valid
+        Rails.logger.info "Postmark webhook authenticated successfully from IP: #{request.remote_ip}"
+        true
+      else
+        Rails.logger.warn "Postmark webhook authentication failed from IP: #{request.remote_ip}"
+        false
+      end
+    end
   end
 end
