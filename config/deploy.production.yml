@@ -21,6 +21,11 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - POSTMARK_API_TOKEN
+    - POSTMARK_WEBHOOK_USERNAME
+    - POSTMARK_WEBHOOK_PASSWORD
+    - STRIPE_SECRET_KEY
+    - STRIPE_PUBLISHABLE_KEY
+    - STRIPE_WEBHOOK_SECRET
   clear:
     # Standard production Puma configuration for 1GB RAM
     WEB_CONCURRENCY: 2
