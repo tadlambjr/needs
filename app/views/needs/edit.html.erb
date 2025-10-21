@@ -44,7 +44,18 @@
       <!-- Category -->
       <div>
         <%= f.label :category_id, "Category", class: "block text-sm font-medium mb-2" %>
-        <%= f.collection_select :category_id, @categories, :id, :name, {}, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        <%= f.select :category_id, 
+            options_for_select(
+              (@need.event? ? @event_categories : @need_categories).map { |c| [c.name, c.id] },
+              @need.category_id
+            ),
+            { prompt: "Select a category" }, 
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            data: { 
+              content_type_target: "categorySelect",
+              need_categories: @need_categories.map { |c| { value: c.id, text: c.name } }.to_json,
+              event_categories: @event_categories.map { |c| { value: c.id, text: c.name } }.to_json
+            } %>
       </div>
 
       <!-- Date Range -->
@@ -79,7 +90,6 @@
       <div data-time-slot-target="specificTime" class="<%= @need.time_slot == 'specific_time' ? '' : 'hidden' %>">
         <%= f.label :specific_time, class: "block text-sm font-medium mb-2" %>
         <%= f.time_field :specific_time, 
-            required: @need.time_slot == 'specific_time',
             data: { time_slot_target: "timeInput" },
             class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
         <p class="text-sm text-gray-500 mt-1">Enter the specific time for this need</p>
@@ -173,8 +183,8 @@
                   <% else %>
                     <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Pending</span>
                   <% end %>
-                  <%= button_to "Remove", room_booking_path(booking), method: :delete,
-                      data: { turbo_confirm: "Remove this room booking?" },
+                  <%= link_to "Remove", room_booking_path(booking),
+                      data: { turbo_method: :delete, turbo_confirm: "Remove this room booking?" },
                       class: "text-sm text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" %>
                 </div>
               </div>

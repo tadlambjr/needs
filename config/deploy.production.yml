@@ -3,8 +3,8 @@ servers:
     hosts:
       - church-needs
     options:
-      memory: 750m
-      memory-swap: 750m
+      memory: 1gb
+      memory-swap: 1gb
       cpus: 1
 
 proxy:
@@ -15,7 +15,7 @@ proxy:
   healthcheck:
     path: /up
     interval: 10
-    timeout: 20
+    timeout: 30
 
 env:
   secret:
@@ -32,13 +32,16 @@ env:
   clear:
     # Set the host for URL generation (production environment)
     APP_HOST: churchneeds.net
-    
+
     # Standard production Puma configuration for 1GB RAM
     WEB_CONCURRENCY: 2
     RAILS_MAX_THREADS: 5
 
-    # Run Solid Queue inside Puma for single-server setup
-    SOLID_QUEUE_IN_PUMA: true
+    # Disable Solid Queue in Puma - causes boot hang on recent deployments
+    SOLID_QUEUE_IN_PUMA: "false"
+    
+    # Skip db:prepare to prevent OOM during deployment
+    SKIP_DB_PREPARE: "true"
 
 # Use a different ssh user than root
 ssh:

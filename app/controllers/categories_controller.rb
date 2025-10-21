@@ -3,7 +3,8 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: [:edit, :update, :destroy]
 
   def index
-    @categories = current_church.categories.order(:name)
+    @need_categories = current_church.categories.for_needs.order(:name)
+    @event_categories = current_church.categories.for_events.order(:name)
   end
 
   def new
@@ -47,7 +48,7 @@ class CategoriesController < ApplicationController
   end
 
   def category_params
-    params.require(:category).permit(:name, :description, :color)
+    params.require(:category).permit(:name, :description, :color, :category_type)
   end
 
   def require_admin

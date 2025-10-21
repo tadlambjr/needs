@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_13_130225) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_20_101506) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -22,8 +22,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_13_130225) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "church_id", null: false
+    t.integer "category_type", default: 0, null: false
     t.index ["church_id", "name"], name: "index_categories_on_church_id_and_name", unique: true
-    t.index ["name"], name: "index_categories_on_name", unique: true
   end
 
   create_table "checklist_completions", force: :cascade do |t|

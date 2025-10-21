@@ -49,7 +49,18 @@
       <!-- Category -->
       <div>
         <%= f.label :category_id, "Category", class: "block text-sm font-medium mb-2" %>
-        <%= f.collection_select :category_id, @categories, :id, :name, { prompt: "Select a category" }, class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700" %>
+        <%= f.select :category_id, 
+            options_for_select(
+              (@need.event? ? @event_categories : @need_categories).map { |c| [c.name, c.id] },
+              @need.category_id
+            ),
+            { prompt: "Select a category" }, 
+            class: "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700",
+            data: { 
+              content_type_target: "categorySelect",
+              need_categories: @need_categories.map { |c| { value: c.id, text: c.name } }.to_json,
+              event_categories: @event_categories.map { |c| { value: c.id, text: c.name } }.to_json
+            } %>
       </div>
 
       <!-- Date Range -->

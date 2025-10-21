@@ -79,12 +79,10 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # Only allow the host specified by APP_HOST environment variable
-  # This ensures staging stays on staging.churchneeds.net and production stays on churchneeds.net
   config.hosts = [
     ENV.fetch("APP_HOST", "churchneeds.net")
   ]
-  
-  # Skip DNS rebinding protection for the default health check endpoint.
+
+  # Skip DNS rebinding protection for health check endpoints.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end

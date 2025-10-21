@@ -14,7 +14,7 @@
       </div>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center space-x-2 lg:space-x-4 flex-wrap gap-y-2">
+      <div class="hidden xl:flex items-center space-x-2 lg:space-x-4">
         <%= link_to "Home", root_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <%= link_to "All Needs", needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <%= link_to "Calendar", calendar_needs_path, class: "px-3 py-2 rounded-md text-sm font-medium #{current_page?(calendar_needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
@@ -72,7 +72,7 @@
       </div>
 
       <!-- Mobile menu button -->
-      <div class="md:hidden">
+      <div class="xl:hidden">
         <button type="button" data-action="click->mobile-menu#toggle" class="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- Mobile menu -->
-    <div data-mobile-menu-target="menu" class="hidden md:hidden pb-4 border-t border-gray-200 dark:border-gray-700 mt-2">
+    <div data-mobile-menu-target="menu" class="hidden xl:hidden pb-4 border-t border-gray-200 dark:border-gray-700 mt-2">
       <div class="flex flex-col space-y-1 pt-2">
         <%= link_to "Home", root_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(root_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>
         <%= link_to "All Needs", needs_path, class: "block px-3 py-2 rounded-md text-sm font-medium #{current_page?(needs_path) ? 'bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}" %>

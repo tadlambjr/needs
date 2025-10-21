@@ -1,4 +1,10 @@
 # Seed file for church needs app
+# Skip seeding in production to avoid validation errors
+if Rails.env.production?
+  puts "Skipping seeds in production environment"
+  return
+end
+
 puts "Seeding database..."
 
 # Create Oikos Community Church

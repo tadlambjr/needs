@@ -1,5 +1,6 @@
 class NeedsController < ApplicationController
   before_action :set_need, only: [:show, :edit, :update, :destroy, :signup, :cancel_signup, :approve, :reject, :complete]
+  before_action :load_form_data, only: [:new, :create, :edit, :update]
   before_action :require_admin, only: [:approve, :reject, :destroy, :pending_approval]
   
   def index
@@ -30,10 +31,6 @@ class NeedsController < ApplicationController
 
   def new
     @need = current_church.needs.new(creator: Current.user)
-    @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-    @checklists_needs = current_church.checklists.active.for_needs.order(:name)
-    @checklists_events = current_church.checklists.active.for_events.order(:name)
-    @rooms = current_church.rooms.active.ordered
   end
 
   def create
@@ -58,20 +55,12 @@ class NeedsController < ApplicationController
       
       redirect_to @need, notice: 'Need was successfully created.'
     else
-      @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-      @checklists_needs = current_church.checklists.active.for_needs.order(:name)
-      @checklists_events = current_church.checklists.active.for_events.order(:name)
-      @rooms = current_church.rooms.active.ordered
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
     authorize_edit!
-    @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-    @checklists_needs = current_church.checklists.active.for_needs.order(:name)
-    @checklists_events = current_church.checklists.active.for_events.order(:name)
-    @rooms = current_church.rooms.active.ordered
   end
 
   def update
@@ -80,10 +69,6 @@ class NeedsController < ApplicationController
     if @need.update(need_params)
       redirect_to @need, notice: 'Need was successfully updated.'
     else
-      @categories = Current.user.admin? ? current_church.categories.active.ordered : current_church.categories.active.member_creatable.ordered
-      @checklists_needs = current_church.checklists.active.for_needs.order(:name)
-      @checklists_events = current_church.checklists.active.for_events.order(:name)
-      @rooms = current_church.rooms.active.ordered
       render :edit, status: :unprocessable_entity
     end
   end
@@ -120,7 +105,8 @@ class NeedsController < ApplicationController
     end
     
     if signup.save
-      redirect_to @need, notice: 'You have successfully signed up for this need.'
+      content_label = @need.event? ? 'event' : 'need'
+      redirect_to @need, notice: "You have successfully signed up for this #{content_label}."
     else
       redirect_to @need, alert: signup.errors.full_messages.join(', ')
     end
@@ -130,7 +116,8 @@ class NeedsController < ApplicationController
     signup = @need.need_signups.find_by(user: Current.user, status: [:signed_up, :waitlist])
     
     if signup&.cancel!(reason: params[:reason])
-      redirect_to @need, notice: 'Your signup has been cancelled.'
+      content_label = @need.event? ? 'RSVP' : 'signup'
+      redirect_to @need, notice: "Your #{content_label} has been cancelled."
     else
       redirect_to @need, alert: 'Unable to cancel signup.'
     end
@@ -246,5 +233,14 @@ class NeedsController < ApplicationController
     unless Current.user.admin? || (@need.creator == Current.user && @need.draft?)
       redirect_to @need, alert: 'You are not authorized to edit this need.'
     end
+  end
+  
+  def load_form_data
+    # Load both need and event categories for filtering via JavaScript
+    @need_categories = Current.user.admin? ? current_church.categories.active.for_needs.ordered : current_church.categories.active.for_needs.member_creatable.ordered
+    @event_categories = Current.user.admin? ? current_church.categories.active.for_events.ordered : current_church.categories.active.for_events.member_creatable.ordered
+    @checklists_needs = current_church.checklists.active.for_needs.order(:name)
+    @checklists_events = current_church.checklists.active.for_events.order(:name)
+    @rooms = current_church.rooms.active.ordered
   end
 end

@@ -15,6 +15,8 @@ export default class extends Controller {
       this.specificTimeTarget.classList.add("hidden")
       if (this.hasTimeInputTarget) {
         this.timeInputTarget.removeAttribute("required")
+        // Clear the value when hiding to prevent validation issues
+        this.timeInputTarget.value = ""
       }
     }
   }
