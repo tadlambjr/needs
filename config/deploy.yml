@@ -49,9 +49,11 @@ env:
     # Set the host for URL generation (staging environment)
     APP_HOST: staging.churchneeds.net
 
-    # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
-    # When you start using multiple servers, you should split out job processing to a dedicated machine.
-    SOLID_QUEUE_IN_PUMA: "true"
+    # Database prefix to isolate from other apps on shared server
+    DATABASE_PREFIX: needs_staging
+
+    # Disable Solid Queue in staging - insufficient resources on shared server
+    SOLID_QUEUE_IN_PUMA: "false"
     PORT: 3000
 
     # Optimize for low traffic (max 2 concurrent users)
@@ -111,25 +113,24 @@ ssh:
   user: roaringlamb
 
 # Use accessory services (secrets come from .kamal/secrets).
-# accessories:
-#   db:
-#     image: mysql:8.0
-#     host: 192.168.0.2
-#     # Change to 3306 to expose port to the world instead of just local network.
-#     port: "127.0.0.1:3306:3306"
-#     env:
-#       clear:
-#         MYSQL_ROOT_HOST: '%'
-#       secret:
-#         - MYSQL_ROOT_PASSWORD
-#     files:
-#       - config/mysql/production.cnf:/etc/mysql/my.cnf
-#       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-#     directories:
-#       - data:/var/lib/mysql
-#   redis:
-#     image: redis:7.0
-#     host: 192.168.0.2
-#     port: 6379
-#     directories:
-#       - data:/data
+accessories:
+  solid_queue:
+    image: roaringlambproductions/needs:latest
+    host: roaring-lamb-staging
+    cmd: bundle exec rake solid_queue:start
+    env:
+      clear:
+        RAILS_ENV: production
+        DATABASE_PREFIX: needs_staging
+        # Reduce resources for shared staging server
+        SOLID_QUEUE_POLL_INTERVAL: 5
+        SOLID_QUEUE_CONCURRENCY: 2
+      secret:
+        - RAILS_MASTER_KEY
+        - POSTMARK_API_TOKEN
+        - STRIPE_SECRET_KEY
+        - TELNYX_API_KEY
+    options:
+      memory: 256m
+      memory-swap: 256m
+      cpus: 0.25

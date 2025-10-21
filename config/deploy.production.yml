@@ -33,6 +33,9 @@ env:
     # Set the host for URL generation (production environment)
     APP_HOST: churchneeds.net
 
+    # Don't use database prefix in production (override staging config)
+    DATABASE_PREFIX: ""
+
     # Standard production Puma configuration for 1GB RAM
     WEB_CONCURRENCY: 2
     RAILS_MAX_THREADS: 5
@@ -47,3 +50,24 @@ env:
 ssh:
   user: needs
 
+# Dedicated Solid Queue for production background jobs
+accessories:
+  solid_queue:
+    image: roaringlambproductions/needs:latest-production
+    host: church-needs
+    cmd: bundle exec rake solid_queue:start
+    env:
+      clear:
+        RAILS_ENV: production
+        # Production has more resources - can handle more concurrency
+        SOLID_QUEUE_POLL_INTERVAL: 1
+        SOLID_QUEUE_CONCURRENCY: 5
+      secret:
+        - RAILS_MASTER_KEY
+        - POSTMARK_API_TOKEN
+        - STRIPE_SECRET_KEY
+        - TELNYX_API_KEY
+    options:
+      memory: 512m
+      memory-swap: 512m
+      cpus: 0.5

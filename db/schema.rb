@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_20_101506) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_21_004722) do
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
@@ -250,6 +250,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_20_101506) do
     t.boolean "email_suppressed", default: false, null: false
     t.datetime "last_email_sent_at"
     t.integer "bounce_count", default: 0, null: false
+    t.boolean "staff", default: false, null: false
     t.index ["church_id", "is_church_admin"], name: "index_users_on_church_id_and_is_church_admin"
     t.index ["church_id", "is_owner"], name: "index_users_on_church_id_and_is_owner", where: "is_owner = 1"
     t.index ["church_id"], name: "index_users_on_church_id"
