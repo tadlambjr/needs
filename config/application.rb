@@ -35,12 +35,16 @@ module Needs
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    
+
     # Autoload services directory
     config.eager_load_paths << Rails.root.join("app/services")
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # Mission Control: Use our authentication rather than HTTP Basic Auth
+    config.mission_control.jobs.base_controller_class = "ApplicationController"
+    config.mission_control.jobs.http_basic_auth_enabled = false
 
     # Add app/javascript to asset load paths for Propshaft
     config.assets.paths << Rails.root.join("app/javascript")
