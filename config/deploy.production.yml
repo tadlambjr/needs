@@ -37,7 +37,8 @@ env:
     DATABASE_PREFIX: ""
 
     # Reduced Puma configuration for memory-constrained server
-    WEB_CONCURRENCY: 1
+    # WEB_CONCURRENCY: 2 means 1 master + 2 workers = 3 processes
+    WEB_CONCURRENCY: 2
     RAILS_MAX_THREADS: 5
 
     # Disable Solid Queue in Puma - causes boot hang on recent deployments
@@ -64,8 +65,11 @@ accessories:
         # Don't use database prefix in production
         DATABASE_PREFIX: ""
         # Reduced concurrency for memory-constrained server
-        SOLID_QUEUE_POLL_INTERVAL: 1
-        SOLID_QUEUE_CONCURRENCY: 3
+        SOLID_QUEUE_POLL_INTERVAL: 2
+        SOLID_QUEUE_CONCURRENCY: 2
+        SOLID_QUEUE_PROCESSES: 2
+        SOLID_QUEUE_DISPATCHERS: 1
+        SOLID_QUEUE_WORKERS: 2
       secret:
         - RAILS_MASTER_KEY
         - POSTMARK_API_TOKEN

@@ -33,6 +33,10 @@ port ENV.fetch("PORT", 3007)
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
+# Preload the application before starting worker threads to improve boot time
+# and make the app available for health checks sooner
+preload_app!
+
 # Run the Solid Queue supervisor inside of Puma for single-server deployments
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"] == "true"
 

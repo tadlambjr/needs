@@ -1,0 +1,30 @@
+production:
+  dispatchers:
+    - polling_interval: 2
+      batch_size: 50
+      concurrency_maintenance_interval: 600
+  workers:
+    - queues: "*"
+      threads: <%= ENV.fetch("SOLID_QUEUE_CONCURRENCY", 2) %>
+      processes: <%= ENV.fetch("SOLID_QUEUE_PROCESSES", 2) %>
+      polling_interval: <%= ENV.fetch("SOLID_QUEUE_POLL_INTERVAL", 2) %>
+
+development:
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 50
+  workers:
+    - queues: "*"
+      threads: 3
+      processes: 1
+      polling_interval: 1
+
+test:
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 50
+  workers:
+    - queues: "*"
+      threads: 1
+      processes: 1
+      polling_interval: 1

@@ -56,12 +56,12 @@ env:
     SOLID_QUEUE_IN_PUMA: "false"
     PORT: 3000
 
+    # Skip db:prepare to speed up deployment boot time
+    SKIP_DB_PREPARE: "true"
+
     # Optimize for low traffic (max 2 concurrent users)
     WEB_CONCURRENCY: 0
-    RAILS_MAX_THREADS: 5
-
-    # Reduce Solid Queue resources for staging
-    # JOB_CONCURRENCY: 1
+    RAILS_MAX_THREADS: 3
 
     # Memory management for shared server
     MALLOC_ARENA_MAX: 2
@@ -122,15 +122,18 @@ accessories:
       clear:
         RAILS_ENV: production
         DATABASE_PREFIX: needs_staging
-        # Reduce resources for shared staging server
-        SOLID_QUEUE_POLL_INTERVAL: 5
-        SOLID_QUEUE_CONCURRENCY: 2
+        # Reduce resources for shared staging server - minimal config
+        SOLID_QUEUE_POLL_INTERVAL: 10
+        SOLID_QUEUE_CONCURRENCY: 1
+        SOLID_QUEUE_PROCESSES: 1
+        SOLID_QUEUE_DISPATCHERS: 1
+        SOLID_QUEUE_WORKERS: 1
       secret:
         - RAILS_MASTER_KEY
         - POSTMARK_API_TOKEN
         - STRIPE_SECRET_KEY
         - TELNYX_API_KEY
     options:
-      memory: 256m
-      memory-swap: 256m
-      cpus: 0.25
+      memory: 320m
+      memory-swap: 320m
+      cpus: 0.5
