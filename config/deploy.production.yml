@@ -3,8 +3,8 @@ servers:
     hosts:
       - church-needs
     options:
-      memory: 1gb
-      memory-swap: 1gb
+      memory: 350m
+      memory-swap: 350m
       cpus: 1
 
 proxy:
@@ -36,13 +36,13 @@ env:
     # Don't use database prefix in production (override staging config)
     DATABASE_PREFIX: ""
 
-    # Standard production Puma configuration for 1GB RAM
-    WEB_CONCURRENCY: 2
+    # Reduced Puma configuration for memory-constrained server
+    WEB_CONCURRENCY: 1
     RAILS_MAX_THREADS: 5
 
     # Disable Solid Queue in Puma - causes boot hang on recent deployments
     SOLID_QUEUE_IN_PUMA: "false"
-    
+
     # Skip db:prepare to prevent OOM during deployment
     SKIP_DB_PREPARE: "true"
 
@@ -56,18 +56,24 @@ accessories:
     image: roaringlambproductions/needs:latest-production
     host: church-needs
     cmd: bundle exec rake solid_queue:start
+    volumes:
+      - "needs_storage:/rails/storage"
     env:
       clear:
         RAILS_ENV: production
-        # Production has more resources - can handle more concurrency
+        # Don't use database prefix in production
+        DATABASE_PREFIX: ""
+        # Reduced concurrency for memory-constrained server
         SOLID_QUEUE_POLL_INTERVAL: 1
-        SOLID_QUEUE_CONCURRENCY: 5
+        SOLID_QUEUE_CONCURRENCY: 3
       secret:
         - RAILS_MASTER_KEY
         - POSTMARK_API_TOKEN
         - STRIPE_SECRET_KEY
         - TELNYX_API_KEY
+        - TELNYX_MESSAGING_PROFILE_ID
+        - TELNYX_PHONE_NUMBER
     options:
-      memory: 512m
-      memory-swap: 512m
+      memory: 256m
+      memory-swap: 256m
       cpus: 0.5
