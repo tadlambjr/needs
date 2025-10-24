@@ -115,19 +115,17 @@ ssh:
 # Use accessory services (secrets come from .kamal/secrets).
 accessories:
   solid_queue:
-    image: roaringlambproductions/needs:latest
+    image: registry.digitalocean.com/roaringlambproductions/needs:latest
     host: roaring-lamb-staging
     cmd: bundle exec rake solid_queue:start
     env:
       clear:
         RAILS_ENV: production
         DATABASE_PREFIX: needs_staging
-        # Reduce resources for shared staging server - minimal config
+        # Minimal Solid Queue configuration for shared staging server
         SOLID_QUEUE_POLL_INTERVAL: 10
         SOLID_QUEUE_CONCURRENCY: 1
         SOLID_QUEUE_PROCESSES: 1
-        SOLID_QUEUE_DISPATCHERS: 1
-        SOLID_QUEUE_WORKERS: 1
       secret:
         - RAILS_MASTER_KEY
         - POSTMARK_API_TOKEN

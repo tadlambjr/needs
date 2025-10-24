@@ -3,9 +3,12 @@ servers:
     hosts:
       - church-needs
     options:
-      memory: 350m
-      memory-swap: 350m
+      memory: 512m
+      memory-swap: 512m
       cpus: 1
+
+# Enable zero-downtime deployments by keeping old containers until new ones are healthy
+retain_containers: 2
 
 proxy:
   ssl: true
@@ -36,9 +39,9 @@ env:
     # Don't use database prefix in production (override staging config)
     DATABASE_PREFIX: ""
 
-    # Reduced Puma configuration for memory-constrained server
-    # WEB_CONCURRENCY: 2 means 1 master + 2 workers = 3 processes
-    WEB_CONCURRENCY: 2
+    # Optimized Puma configuration for 512MB web container
+    # WEB_CONCURRENCY: 1 means 1 master + 1 worker = 2 processes (lower memory)
+    WEB_CONCURRENCY: 1
     RAILS_MAX_THREADS: 5
 
     # Disable Solid Queue in Puma - causes boot hang on recent deployments
@@ -47,6 +50,12 @@ env:
     # Skip db:prepare to prevent OOM during deployment
     SKIP_DB_PREPARE: "true"
 
+    # Ruby memory management for 512MB container
+    MALLOC_ARENA_MAX: 2
+    RUBY_GC_HEAP_GROWTH_FACTOR: 1.1
+    RUBY_GC_HEAP_GROWTH_MAX_SLOTS: 10000
+    RUBY_GC_MALLOC_LIMIT: 16777216
+
 # Use a different ssh user than root
 ssh:
   user: needs
@@ -54,7 +63,7 @@ ssh:
 # Dedicated Solid Queue for production background jobs
 accessories:
   solid_queue:
-    image: roaringlambproductions/needs:latest-production
+    image: registry.digitalocean.com/roaringlambproductions/needs:latest-production
     host: church-needs
     cmd: bundle exec rake solid_queue:start
     volumes:
@@ -64,12 +73,14 @@ accessories:
         RAILS_ENV: production
         # Don't use database prefix in production
         DATABASE_PREFIX: ""
-        # Reduced concurrency for memory-constrained server
-        SOLID_QUEUE_POLL_INTERVAL: 2
-        SOLID_QUEUE_CONCURRENCY: 2
-        SOLID_QUEUE_PROCESSES: 2
-        SOLID_QUEUE_DISPATCHERS: 1
-        SOLID_QUEUE_WORKERS: 2
+        # Minimal Solid Queue configuration for low-usage production (192MB container)
+        # These map to config/solid_queue.yml settings:
+        # - SOLID_QUEUE_PROCESSES: number of worker processes (default 1)
+        # - SOLID_QUEUE_CONCURRENCY: threads per process (default 1)
+        # - SOLID_QUEUE_POLL_INTERVAL: polling frequency in seconds (default 2)
+        SOLID_QUEUE_POLL_INTERVAL: 5
+        SOLID_QUEUE_CONCURRENCY: 1
+        SOLID_QUEUE_PROCESSES: 1
       secret:
         - RAILS_MASTER_KEY
         - POSTMARK_API_TOKEN
@@ -78,6 +89,6 @@ accessories:
         - TELNYX_MESSAGING_PROFILE_ID
         - TELNYX_PHONE_NUMBER
     options:
-      memory: 256m
-      memory-swap: 256m
+      memory: 192m
+      memory-swap: 192m
       cpus: 0.5
